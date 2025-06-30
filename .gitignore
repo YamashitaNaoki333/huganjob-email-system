@@ -1,0 +1,207 @@
+# HUGANJOB営業メール送信システム - Git除外設定
+# 作成日時: 2025年6月30日
+# 目的: 機密情報とデータファイルの保護
+
+# ============================================================
+# 🚨 機密情報・認証ファイル（絶対に除外）
+# ============================================================
+
+# SMTP認証情報
+config/huganjob_email_config.ini
+config/amazon_ses_independent_config.ini
+config/sendgrid_independent_config.ini
+
+# Google API認証情報
+config/google_sheets_credentials.json
+config/rare-basis-454906-a9-bd7e05c67ab2.json
+
+# その他認証ファイル
+*.key
+*.pem
+*.p12
+*credentials*
+*secret*
+*password*
+
+# ============================================================
+# 📊 企業データ・個人情報（絶対に除外）
+# ============================================================
+
+# メイン企業データベース
+data/new_input_test.csv
+data/newdata.csv
+osaka_input.csv
+
+# 企業データバックアップ
+data/new_input_test_backup*.csv
+data/new_input_test.csv_backup*
+data/*backup*.csv
+
+# メールアドレス・送信結果
+huganjob_email_resolution_results.csv*
+huganjob_sending_history.json*
+new_email_sending_results.csv*
+huganjob_*_results.csv
+huganjob_*_history.json
+
+# 配信停止・バウンス情報
+data/huganjob_unsubscribe_log.*
+data/huganjob_*_log.*
+huganjob_bounce_report_*.json
+huganjob_processed_bounces*.json
+
+# 調査・分析結果
+huganjob_spam_investigation_*.json
+huganjob_url_spam_investigation_*.json
+huganjob_dmarc_check_*.json
+*_investigation_*.json
+
+# テストメールファイル
+test_email_*.eml
+*.eml
+
+# ============================================================
+# 🗂️ ログファイル・一時ファイル
+# ============================================================
+
+# ログディレクトリ
+logs/
+new_logs/
+dashboard/logs/
+dashboard/new_logs/
+
+# ログファイル
+*.log
+*.log.*
+
+# 一時ファイル・キャッシュ
+temp_uploads/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+.pytest_cache/
+
+# プロセス管理ファイル
+*.pid
+*.lock
+new_dashboard.pid
+huganjob_sending.lock
+
+# アーカイブ・バックアップ
+new_archives/
+dashboard/new_archives/
+*_archives/
+
+# ============================================================
+# 🔧 開発環境・IDE設定
+# ============================================================
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# PyCharm
+.idea/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# 環境設定
+.env
+.env.*
+venv/
+env/
+ENV/
+
+# ============================================================
+# 📁 データディレクトリ（部分除外）
+# ============================================================
+
+# データディレクトリ内の機密ファイル
+data/derivative_consolidated/
+data/huganjob_consolidated/
+data/results/
+data/backup_*.csv
+data/bounce_test.csv
+
+# ワークフロー進捗ファイル
+data/*_workflow_progress.json
+data/huganjob_sheets_processed.json
+data/huganjob_unprocessable_entries.csv
+
+# ============================================================
+# 🧪 テスト・デバッグファイル
+# ============================================================
+
+# テスト結果ファイル
+derivative_system_test_report_*.json
+domain_investigation_report_*.json
+*_test_report_*.json
+
+# デバッグ・分析スクリプトの出力
+*_analysis_*.json
+*_investigation_*.json
+comparative_analysis_*.py
+prioritized_extraction.log
+
+# ============================================================
+# 📋 引き継ぎ書（部分除外）
+# ============================================================
+
+# 日付付き引き継ぎ書（機密情報含む可能性）
+HUGANJOB_HANDOVER_202*.md
+HANDOVER_202*.md
+*_HANDOVER_202*.md
+
+# ============================================================
+# 🔄 その他除外ファイル
+# ============================================================
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+
+# 一時ファイル
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# 圧縮ファイル
+*.zip
+*.rar
+*.7z
+*.tar.gz
+
+# ============================================================
+# ✅ Git管理対象（明示的に含める）
+# ============================================================
+
+# 重要: 以下のファイルは機密情報を除去してからコミット
+# - README.md
+# - HUGANJOB_CORE_SYSTEM_SPECIFICATIONS.md
+# - AI_ONBOARDING_CHECKLIST.md
+# - 各種ガイドファイル（*.md）
+# - Pythonスクリプト（認証情報除去後）
+# - HTMLテンプレート（追跡情報除去後）
+
+# ============================================================
+# 📞 注意事項
+# ============================================================
+
+# 1. このファイルを変更する前に、必ず内容を確認してください
+# 2. 新しいファイルを追加する際は、機密情報が含まれていないか確認してください
+# 3. git add . を実行する前に、git status で追加されるファイルを確認してください
+# 4. 企業データや認証情報は絶対にコミットしないでください

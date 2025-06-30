@@ -1,0 +1,54 @@
+# HUGAN JOB メール設定ファイル - テンプレート
+# 本番環境では huganjob_email_config.ini にコピーして使用
+# 作成日時: 2025年06月30日
+# 注意: パスワードは環境変数または別ファイルで管理してください
+
+[SMTP]
+# SMTP設定
+# サーバー名: smtp.huganjob.jp
+# ポート: 587
+# ユーザー名: contact@huganjob.jp
+# 認証方式: 通常のパスワード認証
+# 接続の保護: STARTTLS
+server = smtp.huganjob.jp
+port = 587
+user = contact@huganjob.jp
+username = contact@huganjob.jp
+password = YOUR_PASSWORD_HERE
+sender_name = HUGAN JOB採用サポート
+from_name = HUGAN JOB採用サポート
+from_email = contact@huganjob.jp
+reply_to = contact@huganjob.jp
+
+[EMAIL_CONTENT]
+# メール内容設定
+# 確実な変数置換のため二重括弧を使用
+subject = {{job_position}}採用について - HUGAN JOB
+template_file = corporate-email-newsletter.html
+unsubscribe_url = https://forms.gle/49BTNfSgUeNkH7rz5
+
+[SENDING]
+# 送信設定
+# 送信間隔（秒）- 迷惑メール対策で延長
+interval = 10
+# 最大送信数/時間 - Gmail推奨値に調整
+max_per_hour = 30
+# 送信方式（send_message固定）
+method = send_message
+
+[SECURITY]
+# セキュリティ設定
+# TLS暗号化
+use_tls = true
+# 認証必須
+require_auth = true
+# タイムアウト（秒）
+timeout = 30
+
+# ============================================================
+# 🔧 設定手順
+# ============================================================
+# 1. このファイルを huganjob_email_config.ini にコピー
+# 2. YOUR_PASSWORD_HERE を実際のパスワードに置換
+# 3. 必要に応じて他の設定を調整
+# 4. 本番ファイル（huganjob_email_config.ini）は絶対にGitにコミットしない

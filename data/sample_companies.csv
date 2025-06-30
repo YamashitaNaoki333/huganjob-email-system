@@ -1,0 +1,6 @@
+ID,企業名,企業ホームページ,担当者メールアドレス,募集職種,バウンス状態,バウンス日時,バウンス理由,配信停止状態,配信停止日時,配信停止理由
+1,サンプル株式会社,https://example.com,info@example.com,システムエンジニア,False,,,False,,
+2,テスト企業株式会社,https://test-company.com,contact@test-company.com,営業,False,,,False,,
+3,デモ会社,https://demo.co.jp,demo@demo.co.jp,マーケティング,False,,,False,,
+4,例示企業,https://sample.jp,sample@sample.jp,人事,False,,,False,,
+5,見本会社株式会社,https://mihon.com,info@mihon.com,経理,False,,,False,,
