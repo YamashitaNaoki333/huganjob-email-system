@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>企業一覧 | HUGANJOB営業メール送信システム</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">HUGANJOB営業メール送信システム</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">ダッシュボード</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/control">制御パネル</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/companies">企業一覧</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/daily_stats">日別統計</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/unsubscribe-management">配信停止管理</a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">ダッシュボード</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">企業一覧</li>
+                    </ol>
+                </nav>
+
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">HUGANJOB企業一覧</h5>
+                        <div>
+                            <button class="btn btn-sm btn-outline-secondary" id="refreshBtn">更新</button>
+                            <button class="btn btn-sm btn-outline-info ms-2" id="refreshDataBtn">データ再読み込み</button>
+                            <button class="btn btn-sm btn-outline-success ms-2" id="batchProcessBtn" data-bs-toggle="modal" data-bs-target="#batchProcessModal">一括処理</button>
+                            <div class="btn-group ms-2">
+                                <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    {% if current_filter == 'all' %}
+                                        フィルター
+                                    {% elif current_filter == 'email-success' %}
+                                        フィルター: メールアドレス有り
+                                    {% elif current_filter == 'email-failure' %}
+                                        フィルター: メールアドレス無し
+                                    {% elif current_filter == 'rank-a' %}
+                                        フィルター: Aランク企業
+                                    {% elif current_filter == 'rank-b' %}
+                                        フィルター: Bランク企業
+                                    {% elif current_filter == 'rank-c' %}
+                                        フィルター: Cランク企業
+                                    {% elif current_filter == 'sent' %}
+                                        フィルター: HUGANJOB送信済み
+                                    {% elif current_filter == 'not-sent' %}
+                                        フィルター: HUGANJOB未送信
+                                    {% elif current_filter == 'bounced' %}
+                                        フィルター: バウンス
+                                    {% elif current_filter == 'delivered' %}
+                                        フィルター: 配信成功
+                                    {% elif current_filter == 'unsubscribed' %}
+                                        フィルター: 配信停止
+                                    {% elif current_filter == 'subscribable' %}
+                                        フィルター: 配信可能
+                                    {% else %}
+                                        フィルター
+                                    {% endif %}
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item filter-btn {{ 'active' if current_filter == 'all' else '' }}" href="{{ url_for('companies', filter='all', search=current_search, page=1) }}">{{ '✓ ' if current_filter == 'all' else '' }}すべて表示</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item filter-btn {{ 'active' if current_filter == 'email-success' else '' }}" href="{{ url_for('companies', filter='email-success', search=current_search, page=1) }}">{{ '✓ ' if current_filter == 'email-success' else '' }}メールアドレス有り</a></li>
+                                    <li><a class="dropdown-item filter-btn {{ 'active' if current_filter == 'email-failure' else '' }}" href="{{ url_for('companies', filter='email-failure', search=current_search, page=1) }}">{{ '✓ ' if current_filter == 'email-failure' else '' }}メールアドレス無し</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item filter-btn {{ 'active' if current_filter == 'rank-a' else '' }}" href="{{ url_for('companies', filter='rank-a', search=current_search, page=1) }}">{{ '✓ ' if current_filter == 'rank-a' else '' }}Aランク企業</a></li>
+                                    <li><a class="dropdown-item filter-btn {{ 'active' if current_filter == 'rank-b' else '' }}" href="{{ url_for('companies', filter='rank-b', search=current_search, page=1) }}">{{ '✓ ' if current_filter == 'rank-b' else '' }}Bランク企業</a></li>
+                                    <li><a class="dropdown-item filter-btn {{ 'active' if current_filter == 'rank-c' else '' }}" href="{{ url_for('companies', filter='rank-c', search=current_search, page=1) }}">{{ '✓ ' if current_filter == 'rank-c' else '' }}Cランク企業</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item filter-btn {{ 'active' if current_filter == 'sent' else '' }}" href="{{ url_for('companies', filter='sent', search=current_search, page=1) }}">{{ '✓ ' if current_filter == 'sent' else '' }}HUGANJOB送信済み</a></li>
+                                    <li><a class="dropdown-item filter-btn {{ 'active' if current_filter == 'not-sent' else '' }}" href="{{ url_for('companies', filter='not-sent', search=current_search, page=1) }}">{{ '✓ ' if current_filter == 'not-sent' else '' }}HUGANJOB未送信</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item filter-btn {{ 'active' if current_filter == 'bounced' else '' }}" href="{{ url_for('companies', filter='bounced', search=current_search, page=1) }}">{{ '✓ ' if current_filter == 'bounced' else '' }}バウンス</a></li>
+                                    <li><a class="dropdown-item filter-btn {{ 'active' if current_filter == 'delivered' else '' }}" href="{{ url_for('companies', filter='delivered', search=current_search, page=1) }}">{{ '✓ ' if current_filter == 'delivered' else '' }}配信成功</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item filter-btn {{ 'active' if current_filter == 'unsubscribed' else '' }}" href="{{ url_for('companies', filter='unsubscribed', search=current_search, page=1) }}">{{ '✓ ' if current_filter == 'unsubscribed' else '' }}配信停止</a></li>
+                                    <li><a class="dropdown-item filter-btn {{ 'active' if current_filter == 'subscribable' else '' }}" href="{{ url_for('companies', filter='subscribable', search=current_search, page=1) }}">{{ '✓ ' if current_filter == 'subscribable' else '' }}配信可能</a></li>
+                                </ul>
+                            </div>
+                            <form class="d-inline-flex ms-2" method="GET" action="{{ url_for('companies') }}">
+                                <input type="hidden" name="filter" value="{{ current_filter }}">
+                                <input type="hidden" name="page" value="1">
+                                <div class="input-group input-group-sm" style="width: 250px;">
+                                    <input type="text" class="form-control" name="search" value="{{ current_search }}" placeholder="企業名で検索...">
+                                    <button class="btn btn-outline-secondary" type="submit">検索</button>
+                                    {% if current_filter != 'all' or current_search %}
+                                        <a href="{{ url_for('companies') }}" class="btn btn-outline-warning" title="フィルタと検索をクリア">クリア</a>
+                                    {% endif %}
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover" id="companiesTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>企業名</th>
+                                        <th>採用担当メール</th>
+                                        <th>募集職種</th>
+                                        <th>ウェブサイト</th>
+                                        <th>HUGANJOB送信</th>
+                                        <th>配信状況</th>
+                                        <th>配信停止</th>
+                                        <th>詳細</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if companies %}
+                                        {% for company in companies %}
+                                        <tr class="company-row"
+                                            data-email-status="{{ 'success' if company.email else 'failure' }}"
+                                            data-rank="{{ company.rank|lower if company.rank else 'none' }}"
+                                            data-sent="{{ 'yes' if company.email_sent else 'no' }}"
+                                            data-bounced="{{ 'yes' if company.is_bounced else 'no' }}"
+                                            data-unsubscribed="{{ 'yes' if company.unsubscribed else 'no' }}">
+                                            <td>{{ company.id }}</td>
+                                            <td>{{ company.name }}</td>
+                                            <td>
+                                                {% if company.recruitment_email %}
+                                                    {{ company.recruitment_email }}
+                                                {% elif company.email %}
+                                                    {{ company.email }}
+                                                {% else %}
+                                                    <span class="text-muted">未登録</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if company.job_position %}
+                                                    <span class="badge bg-info">{{ company.job_position }}</span>
+                                                {% else %}
+                                                    <span class="text-muted">未登録</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if company.website %}
+                                                    <a href="{{ company.website }}" target="_blank" class="text-truncate" style="max-width: 200px; display: inline-block;">{{ company.website }}</a>
+                                                {% else %}
+                                                    <span class="text-muted">未登録</span>
+                                                {% endif %}
+                                            </td>
+
+                                            <td>
+                                                {% if company.email_sent %}
+                                                    <span class="badge bg-success">送信済み</span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary">未送信</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if company.email_sent %}
+                                                    {% if company.is_bounced %}
+                                                        <span class="badge bg-danger">バウンス</span>
+                                                    {% else %}
+                                                        <span class="badge bg-success">配信成功</span>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <span class="text-muted">-</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if company.unsubscribed %}
+                                                    <span class="badge bg-warning text-dark">配信停止</span>
+                                                {% else %}
+                                                    <span class="badge bg-success">配信可能</span>
+                                                {% endif %}
+                                                <br><small class="text-muted">sent:{{ company.email_sent }}, is_bounced:{{ company.is_bounced }}, csv_bounce:{{ company.csv_bounce_status }}</small>
+                                            </td>
+                                            <td>
+                                                <a href="/company/{{ company.id }}" class="btn btn-sm btn-outline-info">詳細</a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    {% else %}
+                                        <tr>
+                                            <td colspan="8" class="text-center">企業データがありません</td>
+                                        </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div>
+                                {% if current_filter != 'all' or current_search %}
+                                    <span>フィルタ結果: {{ total_filtered_companies|default(0) }} 社中 {{ companies|length }} 社表示 (全 {{ total_companies|default(0) }} 社)</span>
+                                {% else %}
+                                    <span>全 {{ total_companies|default(0) }} 社中 {{ companies|length }} 社表示</span>
+                                {% endif %}
+                            </div>
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination pagination-sm">
+                                    <li class="page-item {{ 'disabled' if current_page == 1 else '' }}">
+                                        <a class="page-link" href="{{ url_for('companies', page=current_page-1, filter=current_filter, search=current_search) if current_page > 1 else '#' }}">前へ</a>
+                                    </li>
+
+                                    {% for p in range(1, total_pages + 1) %}
+                                        {% if p == current_page %}
+                                            <li class="page-item active"><span class="page-link">{{ p }}</span></li>
+                                        {% elif p <= 3 or p >= total_pages - 2 or (p >= current_page - 1 and p <= current_page + 1) %}
+                                            <li class="page-item"><a class="page-link" href="{{ url_for('companies', page=p, filter=current_filter, search=current_search) }}">{{ p }}</a></li>
+                                        {% elif p == 4 and current_page > 5 or p == total_pages - 3 and current_page < total_pages - 4 %}
+                                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    <li class="page-item {{ 'disabled' if current_page == total_pages else '' }}">
+                                        <a class="page-link" href="{{ url_for('companies', page=current_page+1, filter=current_filter, search=current_search) if current_page < total_pages else '#' }}">次へ</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title">HUGANJOB企業処理状況サマリー</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>メールアドレス保有状況</h6>
+                                <canvas id="emailExtractionChart" height="200"></canvas>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>ウェブサイト分析ランク分布</h6>
+                                <canvas id="websiteRankChart" height="200"></canvas>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <h6>HUGANJOB送信状況</h6>
+                                <canvas id="emailSendingChart" height="200"></canvas>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>バウンス状況</h6>
+                                <canvas id="bounceChart" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 一括処理モーダル -->
+    <div class="modal fade" id="batchProcessModal" tabindex="-1" aria-labelledby="batchProcessModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="batchProcessModalLabel">一括処理</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="batchProcessForm">
+                        <div class="mb-3">
+                            <label for="inputFile" class="form-label">入力ファイル</label>
+                            <input type="text" class="form-control" id="inputFile" name="inputFile" value="input_utf8.csv" readonly>
+                            <div class="form-text">入力ファイルは固定です</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="startId" class="form-label">開始ID</label>
+                                <input type="number" class="form-control" id="startId" name="startId" min="1" value="1">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="endId" class="form-label">終了ID</label>
+                                <input type="number" class="form-control" id="endId" name="endId" min="1" value="10">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">実行するステップ</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="extractEmails" name="steps" value="extract_emails" checked>
+                                <label class="form-check-label" for="extractEmails">
+                                    メールアドレス抽出
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="analyzeWebsites" name="steps" value="analyze_websites" checked>
+                                <label class="form-check-label" for="analyzeWebsites">
+                                    ウェブサイト分析
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="sendEmails" name="steps" value="send_emails" checked>
+                                <label class="form-check-label" for="sendEmails">
+                                    メール送信
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- メール形式選択 -->
+                        <div class="mb-3" id="emailFormatSection">
+                            <label for="batchEmailFormat" class="form-label">メール形式</label>
+                            <select class="form-select" id="batchEmailFormat" name="email_format">
+                                <option value="html_text">HTML + テキスト（推奨）</option>
+                                <option value="html_only">HTMLのみ</option>
+                                <option value="text_only">テキストのみ</option>
+                            </select>
+                            <div class="form-text">HTMLメール表示問題がある場合はテキストのみを選択してください</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="resetProgress" name="resetProgress">
+                                <label class="form-check-label" for="resetProgress">
+                                    進捗状況をリセットする
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="alert alert-info">
+                        <strong>注意:</strong> 処理には時間がかかる場合があります。処理中はブラウザを閉じないでください。
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+                    <button type="button" class="btn btn-primary" id="startBatchProcess">処理開始</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 処理状況モーダル -->
+    <div class="modal fade" id="processStatusModal" tabindex="-1" aria-labelledby="processStatusModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="processStatusModalLabel">処理状況</h5>
+                </div>
+                <div class="modal-body">
+                    <div id="processStatusContainer">
+                        <div class="d-flex align-items-center mb-3">
+                            <strong id="currentStepLabel">処理を開始しています...</strong>
+                            <div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>
+                        </div>
+                        <div class="progress mb-3">
+                            <div id="processProgressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">処理ログ</div>
+                            <div class="card-body">
+                                <pre id="processLog" style="max-height: 300px; overflow-y: auto;"></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancelProcess">キャンセル</button>
+                    <button type="button" class="btn btn-primary" id="closeProcessStatus" style="display: none;">閉じる</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // 更新ボタン
+        document.getElementById('refreshBtn').addEventListener('click', function() {
+            // 現在のフィルタと検索パラメータを保持して更新
+            const urlParams = new URLSearchParams(window.location.search);
+            urlParams.set('refresh', 'true');
+            window.location.href = '/companies?' + urlParams.toString();
+        });
+
+        // データ再読み込みボタン
+        document.getElementById('refreshDataBtn').addEventListener('click', function() {
+            if (confirm('データキャッシュをクリアして最新のファイルから再読み込みしますか？')) {
+                // ボタンを無効化
+                this.disabled = true;
+                this.textContent = '再読み込み中...';
+
+                fetch('/api/refresh_data', {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        // ページを更新
+                        window.location.reload();
+                    } else {
+                        alert('エラー: ' + data.message);
+                        // ボタンを再有効化
+                        this.disabled = false;
+                        this.textContent = 'データ再読み込み';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('データ再読み込み中にエラーが発生しました');
+                    // ボタンを再有効化
+                    this.disabled = false;
+                    this.textContent = 'データ再読み込み';
+                });
+            }
+        });
+
+        // チャートの初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            // メールアドレス抽出状況チャート
+            const emailExtractionCtx = document.getElementById('emailExtractionChart').getContext('2d');
+            new Chart(emailExtractionCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['メールアドレス有り', 'メールアドレス無し'],
+                    datasets: [{
+                        data: [{{ stats.email_extracted|default(0)|int }}, {{ stats.email_not_extracted|default(0)|int }}],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.7)',
+                            'rgba(255, 99, 132, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(255, 99, 132, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+
+            // ウェブサイト分析ランク分布チャート
+            const websiteRankCtx = document.getElementById('websiteRankChart').getContext('2d');
+            new Chart(websiteRankCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Aランク', 'Bランク', 'Cランク', '未分析'],
+                    datasets: [{
+                        data: [
+                            {{ stats.rank_a|default(0) }},
+                            {{ stats.rank_b|default(0) }},
+                            {{ stats.rank_c|default(0) }},
+                            {{ stats.not_analyzed|default(0) }}
+                        ],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.7)',
+                            'rgba(54, 162, 235, 0.7)',
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(201, 203, 207, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(201, 203, 207, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+
+            // メール送信状況チャート
+            const emailSendingCtx = document.getElementById('emailSendingChart').getContext('2d');
+            new Chart(emailSendingCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['送信済み', '未送信'],
+                    datasets: [{
+                        data: [{{ stats.email_sent|default(0) }}, {{ stats.email_not_sent|default(0) }}],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.7)',
+                            'rgba(201, 203, 207, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(201, 203, 207, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+
+            // バウンス状況チャート
+            const bounceCtx = document.getElementById('bounceChart').getContext('2d');
+            new Chart(bounceCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['配信成功', 'バウンス', '未送信'],
+                    datasets: [{
+                        data: [
+                            {{ stats.delivered|default(0) }},
+                            {{ stats.bounced|default(0) }},
+                            {{ stats.email_not_sent|default(0) }}
+                        ],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.7)',
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(201, 203, 207, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(201, 203, 207, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+        });
+
+        // 一括処理機能
+        document.addEventListener('DOMContentLoaded', function() {
+            const batchProcessForm = document.getElementById('batchProcessForm');
+            const startBatchProcessBtn = document.getElementById('startBatchProcess');
+            const cancelProcessBtn = document.getElementById('cancelProcess');
+            const closeProcessStatusBtn = document.getElementById('closeProcessStatus');
+            const processStatusModal = new bootstrap.Modal(document.getElementById('processStatusModal'), {
+                backdrop: 'static',
+                keyboard: false
+            });
+            const batchProcessModal = new bootstrap.Modal(document.getElementById('batchProcessModal'));
+
+            let currentProcessId = null;
+            let processingSteps = [];
+            let currentStepIndex = 0;
+            let processInterval = null;
+
+            // メール送信チェックボックスの状態に応じてメール形式選択を表示/非表示
+            const sendEmailsCheckbox = document.getElementById('sendEmails');
+            const emailFormatSection = document.getElementById('emailFormatSection');
+
+            function toggleEmailFormatSection() {
+                if (sendEmailsCheckbox.checked) {
+                    emailFormatSection.style.display = 'block';
+                } else {
+                    emailFormatSection.style.display = 'none';
+                }
+            }
+
+            sendEmailsCheckbox.addEventListener('change', toggleEmailFormatSection);
+            toggleEmailFormatSection(); // 初期状態を設定
+
+            // 処理開始ボタンのクリックイベント
+            startBatchProcessBtn.addEventListener('click', function() {
+                // フォームデータの取得
+                const inputFile = document.getElementById('inputFile').value;
+                const startId = document.getElementById('startId').value;
+                const endId = document.getElementById('endId').value;
+                const resetProgress = document.getElementById('resetProgress').checked;
+                const emailFormat = document.getElementById('batchEmailFormat').value;
+
+                // 選択されたステップを取得
+                const selectedSteps = [];
+                document.querySelectorAll('input[name="steps"]:checked').forEach(function(checkbox) {
+                    selectedSteps.push(checkbox.value);
+                });
+
+                // 選択されたステップがない場合はエラー
+                if (selectedSteps.length === 0) {
+                    alert('実行するステップを選択してください。');
+                    return;
+                }
+
+                // 処理開始
+                processingSteps = selectedSteps;
+                currentStepIndex = 0;
+
+                // 処理状況モーダルを表示
+                batchProcessModal.hide();
+                document.getElementById('processLog').textContent = '';
+                document.getElementById('processProgressBar').style.width = '0%';
+                document.getElementById('currentStepLabel').textContent = '処理を開始しています...';
+                document.getElementById('cancelProcess').style.display = 'block';
+                document.getElementById('closeProcessStatus').style.display = 'none';
+                processStatusModal.show();
+
+                // 選択されたステップが1つだけの場合
+                if (processingSteps.length === 1) {
+                    // 単一ステップを実行
+                    executeStep(processingSteps[0], inputFile, startId, endId, resetProgress);
+                } else {
+                    // 複数のステップが選択されている場合は統合ワークフローを使用
+                    executeIntegratedWorkflow(processingSteps, inputFile, startId, endId, resetProgress);
+                }
+            });
+
+            // 統合ワークフローを実行する関数
+            function executeIntegratedWorkflow(steps, inputFile, startId, endId, resetProgress) {
+                // ステップ名を表示
+                document.getElementById('currentStepLabel').textContent = `統合ワークフローを実行中...`;
+
+                // ログに追加
+                const logElement = document.getElementById('processLog');
+                logElement.textContent += `[${new Date().toLocaleTimeString()}] 統合ワークフローを開始します...\n`;
+                logElement.scrollTop = logElement.scrollHeight;
+
+                // 開始ステップと終了ステップを決定
+                const startStep = steps[0];
+                const endStep = steps[steps.length - 1];
+
+                // APIリクエストを作成
+                const requestData = {
+                    input_file: inputFile,
+                    start_id: startId,
+                    end_id: endId,
+                    step: 'integrated',
+                    start_from: startStep,
+                    end_at: endStep,
+                    reset_progress: resetProgress
+                };
+
+                // APIを呼び出し
+                fetch('/api/batch_process', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // プロセスIDを保存
+                        currentProcessId = data.process_id;
+
+                        // プロセスの状態を監視
+                        monitorProcess(currentProcessId);
+                    } else {
+                        // エラーの場合
+                        logElement.textContent += `[${new Date().toLocaleTimeString()}] エラー: ${data.message}\n`;
+                        logElement.scrollTop = logElement.scrollHeight;
+
+                        // 処理を終了
+                        finishProcess(false);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    logElement.textContent += `[${new Date().toLocaleTimeString()}] エラー: ${error.message}\n`;
+                    logElement.scrollTop = logElement.scrollHeight;
+
+                    // 処理を終了
+                    finishProcess(false);
+                });
+            }
+
+            // 単一ステップを実行する関数
+            function executeStep(step, inputFile, startId, endId, resetProgress) {
+                // 現在のステップ名を表示
+                const stepNames = {
+                    'extract_emails': 'メールアドレス抽出',
+                    'analyze_websites': 'ウェブサイト分析',
+                    'send_emails': 'メール送信'
+                };
+                document.getElementById('currentStepLabel').textContent = `${stepNames[step]}を実行中...`;
+
+                // プログレスバーを更新
+                const progress = (currentStepIndex / processingSteps.length) * 100;
+                document.getElementById('processProgressBar').style.width = `${progress}%`;
+
+                // ログに追加
+                const logElement = document.getElementById('processLog');
+                logElement.textContent += `[${new Date().toLocaleTimeString()}] ${stepNames[step]}を開始します...\n`;
+                logElement.scrollTop = logElement.scrollHeight;
+
+                // APIリクエストを作成
+                const requestData = {
+                    input_file: inputFile,
+                    start_id: startId,
+                    end_id: endId,
+                    step: step,
+                    reset_progress: resetProgress
+                };
+
+                // APIを呼び出し
+                fetch('/api/batch_process', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // プロセスIDを保存
+                        currentProcessId = data.process_id;
+
+                        // プロセスの状態を監視
+                        monitorProcess(currentProcessId);
+                    } else {
+                        // エラーの場合
+                        logElement.textContent += `[${new Date().toLocaleTimeString()}] エラー: ${data.message}\n`;
+                        logElement.scrollTop = logElement.scrollHeight;
+
+                        // 処理を終了
+                        finishProcess(false);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    logElement.textContent += `[${new Date().toLocaleTimeString()}] エラー: ${error.message}\n`;
+                    logElement.scrollTop = logElement.scrollHeight;
+
+                    // 処理を終了
+                    finishProcess(false);
+                });
+            }
+
+            // プロセスの状態を監視する関数
+            function monitorProcess(processId) {
+                // 定期的にプロセスの状態を確認
+                processInterval = setInterval(function() {
+                    fetch(`/api/process_status/${processId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const logElement = document.getElementById('processLog');
+
+                            // 出力があれば表示
+                            if (data.output && data.output !== '') {
+                                // 新しい行だけを追加
+                                const lines = data.output.split('\n');
+                                const lastLine = lines[lines.length - 1];
+                                if (lastLine.trim() !== '') {
+                                    logElement.textContent += `${lastLine}\n`;
+                                    logElement.scrollTop = logElement.scrollHeight;
+                                }
+                            }
+
+                            // プロセスが終了した場合
+                            if (data.status === 'completed' || data.status === 'failed' || data.status === 'terminated') {
+                                clearInterval(processInterval);
+
+                                if (data.status === 'completed') {
+                                    // 成功の場合
+                                    if (processingSteps.length === 1) {
+                                        // 単一ステップの場合
+                                        logElement.textContent += `[${new Date().toLocaleTimeString()}] ${processingSteps[currentStepIndex]}が完了しました\n`;
+                                    } else {
+                                        // 統合ワークフローの場合
+                                        logElement.textContent += `[${new Date().toLocaleTimeString()}] 統合ワークフローが完了しました\n`;
+                                    }
+                                    logElement.scrollTop = logElement.scrollHeight;
+
+                                    // 次のステップがあれば実行（単一ステップの場合のみ）
+                                    if (processingSteps.length === 1) {
+                                        currentStepIndex++;
+                                        if (currentStepIndex < processingSteps.length) {
+                                            // 次のステップを実行
+                                            const inputFile = document.getElementById('inputFile').value;
+                                            const startId = document.getElementById('startId').value;
+                                            const endId = document.getElementById('endId').value;
+                                            const resetProgress = document.getElementById('resetProgress').checked;
+
+                                            // 少し待ってから次のステップを実行
+                                            setTimeout(function() {
+                                                executeStep(processingSteps[currentStepIndex], inputFile, startId, endId, resetProgress);
+                                            }, 1000);
+                                        } else {
+                                            // すべてのステップが完了
+                                            finishProcess(true);
+                                        }
+                                    } else {
+                                        // 統合ワークフローの場合は完了
+                                        finishProcess(true);
+                                    }
+                                } else {
+                                    // 失敗の場合
+                                    logElement.textContent += `[${new Date().toLocaleTimeString()}] エラー: ${data.error || 'プロセスが失敗しました'}\n`;
+                                    logElement.scrollTop = logElement.scrollHeight;
+
+                                    // 処理を終了
+                                    finishProcess(false);
+                                }
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            const logElement = document.getElementById('processLog');
+                            logElement.textContent += `[${new Date().toLocaleTimeString()}] エラー: ${error.message}\n`;
+                            logElement.scrollTop = logElement.scrollHeight;
+                        });
+                }, 1000);
+            }
+
+            // 処理を終了する関数
+            function finishProcess(success) {
+                // プログレスバーを更新
+                document.getElementById('processProgressBar').style.width = '100%';
+                document.getElementById('processProgressBar').classList.remove('progress-bar-animated');
+
+                if (success) {
+                    document.getElementById('processProgressBar').classList.remove('bg-danger');
+                    document.getElementById('processProgressBar').classList.add('bg-success');
+                    document.getElementById('currentStepLabel').textContent = 'すべての処理が完了しました';
+                } else {
+                    document.getElementById('processProgressBar').classList.remove('bg-success');
+                    document.getElementById('processProgressBar').classList.add('bg-danger');
+                    document.getElementById('currentStepLabel').textContent = '処理中にエラーが発生しました';
+                }
+
+                // ボタンの表示を切り替え
+                document.getElementById('cancelProcess').style.display = 'none';
+                document.getElementById('closeProcessStatus').style.display = 'block';
+
+                // ログに追加
+                const logElement = document.getElementById('processLog');
+                logElement.textContent += `[${new Date().toLocaleTimeString()}] 処理が${success ? '完了' : '失敗'}しました\n`;
+                logElement.scrollTop = logElement.scrollHeight;
+            }
+
+            // キャンセルボタンのクリックイベント
+            cancelProcessBtn.addEventListener('click', function() {
+                if (currentProcessId) {
+                    // プロセスをキャンセル
+                    fetch(`/api/stop_process/${currentProcessId}`, {
+                        method: 'POST'
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const logElement = document.getElementById('processLog');
+                        logElement.textContent += `[${new Date().toLocaleTimeString()}] プロセスをキャンセルしました\n`;
+                        logElement.scrollTop = logElement.scrollHeight;
+
+                        // 監視を停止
+                        clearInterval(processInterval);
+
+                        // 処理を終了
+                        finishProcess(false);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                }
+            });
+
+            // 閉じるボタンのクリックイベント
+            closeProcessStatusBtn.addEventListener('click', function() {
+                processStatusModal.hide();
+
+                // ページを更新
+                window.location.reload();
+            });
+        });
+    </script>
+</body>
+</html>

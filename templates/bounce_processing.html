@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>バウンス処理 | メールマーケティングシステム</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">メールマーケティングシステム</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">ダッシュボード</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/control">制御パネル</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/companies">企業一覧</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/bounce-processing">バウンス処理</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">ダッシュボード</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">バウンス処理</li>
+                    </ol>
+                </nav>
+
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            独立バウンス処理システム
+                        </h5>
+                        <small class="text-muted">統合ワークフローから分離された専用プロセス</small>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info">
+                            <h6><i class="fas fa-info-circle me-2"></i>バウンス処理について</h6>
+                            <p class="mb-2">このシステムは実際のメールボックス（marketing@fortyfive.co.jp）からバウンスメールを検出し、送信記録のステータスを正確に更新します。</p>
+                            <ul class="mb-0">
+                                <li>30日間のメールボックス履歴を包括的に検索</li>
+                                <li>複数のバウンスパターンを自動検出</li>
+                                <li>「success」→「failure」への確実なステータス更新</li>
+                                <li>詳細な処理レポートを自動生成</li>
+                            </ul>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>バウンス処理実行</h6>
+                                <form id="bounceProcessForm">
+                                    <div class="mb-3">
+                                        <label for="daysInput" class="form-label">検索対象日数</label>
+                                        <select class="form-select" id="daysInput" name="days">
+                                            <option value="7">過去7日間</option>
+                                            <option value="14">過去14日間</option>
+                                            <option value="30" selected>過去30日間（推奨）</option>
+                                            <option value="60">過去60日間</option>
+                                            <option value="90">過去90日間</option>
+                                        </select>
+                                        <small class="form-text text-muted">メールボックスから検索する期間を選択してください</small>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="testModeCheck" name="test_mode">
+                                            <label class="form-check-label" for="testModeCheck">
+                                                テストモード
+                                            </label>
+                                            <small class="form-text text-muted d-block">チェックすると実際の更新は行わず、検出のみを実行します</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="forceReprocessCheck" name="force_reprocess">
+                                            <label class="form-check-label" for="forceReprocessCheck">
+                                                強制再処理
+                                            </label>
+                                            <small class="form-text text-muted d-block">処理済み追跡を無視して全てのバウンスメールを再処理します</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="resetTrackingCheck" name="reset_tracking">
+                                            <label class="form-check-label" for="resetTrackingCheck">
+                                                追跡リセット
+                                            </label>
+                                            <small class="form-text text-muted d-block">処理済み追跡ファイルをリセットして新規状態にします</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-grid gap-2">
+                                        <button type="submit" class="btn btn-warning">
+                                            <i class="fas fa-play me-2"></i>バウンス処理を開始
+                                        </button>
+                                        <button type="button" class="btn btn-outline-info" id="statusBtn">
+                                            <i class="fas fa-chart-line me-2"></i>処理状況を確認
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="col-md-6">
+                                <h6>検出パターン</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>パターン</th>
+                                                <th>タイプ</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Undelivered Mail Returned to Sender</td>
+                                                <td><span class="badge bg-danger">Hard</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>unknown user / user unknown</td>
+                                                <td><span class="badge bg-danger">Hard</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Relay access denied</td>
+                                                <td><span class="badge bg-danger">Hard</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>mailbox unavailable</td>
+                                                <td><span class="badge bg-danger">Hard</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>quota exceeded</td>
+                                                <td><span class="badge bg-warning">Soft</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>blocked / spam</td>
+                                                <td><span class="badge bg-danger">Hard</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 処理結果表示エリア -->
+                <div class="card mb-4" id="resultsCard" style="display: none;">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-chart-bar me-2"></i>
+                            処理結果
+                        </h5>
+                    </div>
+                    <div class="card-body" id="resultsContent">
+                        <!-- 結果がここに表示されます -->
+                    </div>
+                </div>
+
+                <!-- 実行中のプロセス -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-cogs me-2"></i>
+                            実行中のプロセス
+                        </h5>
+                        <button id="refreshBtn" class="btn btn-sm btn-outline-primary">更新</button>
+                    </div>
+                    <div class="card-body">
+                        <div id="processesContainer">
+                            <p class="text-center">実行中のプロセスはありません</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // バウンス処理フォームの送信
+        function setupBounceProcessForm() {
+            const form = document.getElementById('bounceProcessForm');
+            if (!form) {
+                console.error('bounceProcessForm が見つかりません');
+                return;
+            }
+
+            console.log('バウンス処理フォームのイベントリスナーを設定中...');
+            form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('バウンス処理フォームが送信されました');
+
+            const days = document.getElementById('daysInput').value;
+            const testMode = document.getElementById('testModeCheck').checked;
+            const forceReprocess = document.getElementById('forceReprocessCheck').checked;
+            const resetTracking = document.getElementById('resetTrackingCheck').checked;
+
+            console.log('フォームデータ:', { days, testMode, forceReprocess, resetTracking });
+
+            let confirmMessage = `バウンス処理を開始しますか？\n\n検索期間: 過去${days}日間\nモード: ${testMode ? 'テスト' : '本番'}`;
+            if (forceReprocess) confirmMessage += '\n強制再処理: 有効';
+            if (resetTracking) confirmMessage += '\n追跡リセット: 有効';
+
+            if (!confirm(confirmMessage)) {
+                console.log('ユーザーがキャンセルしました');
+                return;
+            }
+
+            const requestData = {
+                days: parseInt(days),
+                test_mode: testMode,
+                force_reprocess: forceReprocess,
+                reset_tracking: resetTracking
+            };
+
+            console.log('送信データ:', requestData);
+
+            // ボタンを無効化
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>処理中...';
+
+            fetch('/api/process_bounces', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestData)
+            })
+            .then(response => {
+                console.log('レスポンス受信:', response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('レスポンスデータ:', data);
+                if (data.success) {
+                    alert(data.message);
+                    updateProcesses();
+                } else {
+                    alert('エラー: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('バウンス処理の開始中にエラーが発生しました: ' + error.message);
+            })
+            .finally(() => {
+                // ボタンを再有効化
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            });
+        });
+        }
+
+        // 処理状況確認ボタンの設定
+        function setupStatusButton() {
+            const statusBtn = document.getElementById('statusBtn');
+            if (!statusBtn) {
+                console.error('statusBtn が見つかりません');
+                return;
+            }
+
+            console.log('処理状況確認ボタンのイベントリスナーを設定中...');
+            statusBtn.addEventListener('click', function() {
+            console.log('処理状況確認ボタンがクリックされました');
+
+            // ボタンを無効化
+            const btn = this;
+            const originalText = btn.textContent;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>確認中...';
+
+            fetch('/api/bounce_status')
+            .then(response => {
+                console.log('バウンス状況レスポンス:', response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('バウンス状況データ:', data);
+                if (data.success && data.has_report) {
+                    showResults(data.report);
+                } else {
+                    alert(data.message || 'バウンス処理レポートが見つかりません');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('バウンス処理状況の取得中にエラーが発生しました: ' + error.message);
+            })
+            .finally(() => {
+                // ボタンを再有効化
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            });
+        });
+        }
+
+        // 更新ボタンの設定
+        function setupRefreshButton() {
+            const refreshBtn = document.getElementById('refreshBtn');
+            if (!refreshBtn) {
+                console.error('refreshBtn が見つかりません');
+                return;
+            }
+
+            console.log('更新ボタンのイベントリスナーを設定中...');
+            refreshBtn.addEventListener('click', updateProcesses);
+        }
+
+        // 結果表示
+        function showResults(report) {
+            const resultsCard = document.getElementById('resultsCard');
+            const resultsContent = document.getElementById('resultsContent');
+            
+            const html = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>処理サマリー</h6>
+                        <table class="table table-sm">
+                            <tr>
+                                <td>処理日時</td>
+                                <td>${report.timestamp}</td>
+                            </tr>
+                            <tr>
+                                <td>検出されたバウンス</td>
+                                <td><strong>${report.total_bounces_detected}件</strong></td>
+                            </tr>
+                            <tr>
+                                <td>更新されたレコード</td>
+                                <td><strong>${report.records_updated}件</strong></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>バウンス詳細</h6>
+                        <div style="max-height: 200px; overflow-y: auto;">
+                            ${report.bounce_details.map(detail => 
+                                `<div class="border-bottom py-1">
+                                    <small><strong>${detail.email}</strong><br>
+                                    理由: ${detail.reason}<br>
+                                    日時: ${detail.date}</small>
+                                </div>`
+                            ).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            resultsContent.innerHTML = html;
+            resultsCard.style.display = 'block';
+        }
+
+        // HTMLエスケープ関数
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // プロセス一覧更新
+        function updateProcesses() {
+            fetch('/api/get_processes')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('processesContainer');
+                if (data.length === 0) {
+                    container.innerHTML = '<p class="text-center">実行中のプロセスはありません</p>';
+                    return;
+                }
+
+                let html = '<div class="list-group">';
+                data.forEach(process => {
+                    const statusBadge = process.status === 'running' ? 'bg-primary' :
+                                       process.status === 'completed' ? 'bg-success' :
+                                       process.status === 'failed' ? 'bg-danger' : 'bg-warning';
+                    const statusText = process.status === 'running' ? '実行中' :
+                                      process.status === 'completed' ? '完了' :
+                                      process.status === 'failed' ? '失敗' : 'エラー';
+
+                    // 実行時間の表示
+                    const durationText = process.duration || '不明';
+
+                    // プロセス出力の表示準備
+                    let outputHtml = '';
+                    if (process.output && process.output.trim()) {
+                        // 出力を行に分割して表示
+                        const outputLines = process.output.split('\n').filter(line => line.trim());
+                        if (outputLines.length > 0) {
+                            outputHtml = `
+                                <div class="mt-2">
+                                    <small class="text-muted">処理詳細:</small>
+                                    <div class="bg-light p-2 rounded" style="max-height: 200px; overflow-y: auto; font-family: monospace; font-size: 0.8em;">
+                                        ${outputLines.map(line => `<div>${escapeHtml(line)}</div>`).join('')}
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+
+                    html += `
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">${process.description || process.command}</h6>
+                                    <small class="text-muted">開始: ${process.start_time || '不明'} | 実行時間: ${durationText}</small>
+                                    ${process.status !== 'running' ? '<small class="text-success d-block">※ 処理が完了しました</small>' : ''}
+                                    ${outputHtml}
+                                </div>
+                                <span class="badge ${statusBadge} ms-2">${statusText}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                container.innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('processesContainer').innerHTML =
+                    '<div class="alert alert-danger">プロセス一覧の取得中にエラーが発生しました</div>';
+            });
+        }
+
+        // ページ読み込み時の初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('バウンス処理ページが読み込まれました');
+
+            // フォーム要素の存在確認
+            const form = document.getElementById('bounceProcessForm');
+            const daysInput = document.getElementById('daysInput');
+            const testModeCheck = document.getElementById('testModeCheck');
+            const forceReprocessCheck = document.getElementById('forceReprocessCheck');
+            const resetTrackingCheck = document.getElementById('resetTrackingCheck');
+            const statusBtn = document.getElementById('statusBtn');
+            const refreshBtn = document.getElementById('refreshBtn');
+
+            console.log('フォーム要素チェック:', {
+                form: !!form,
+                daysInput: !!daysInput,
+                testModeCheck: !!testModeCheck,
+                forceReprocessCheck: !!forceReprocessCheck,
+                resetTrackingCheck: !!resetTrackingCheck,
+                statusBtn: !!statusBtn,
+                refreshBtn: !!refreshBtn
+            });
+
+            // イベントリスナーを設定
+            setupBounceProcessForm();
+            setupStatusButton();
+            setupRefreshButton();
+
+            // 初期データを読み込み
+            updateProcesses();
+        });
+
+        // 定期更新
+        setInterval(updateProcesses, 30000);
+    </script>
+</body>
+</html>

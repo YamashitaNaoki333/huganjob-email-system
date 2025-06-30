@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>エラー - メールマーケティングシステム</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .error-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .error-title {
+            color: #e74c3c;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .error-details {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-left: 4px solid #e74c3c;
+        }
+        .error-traceback {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+        .error-timestamp {
+            margin-top: 20px;
+            color: #777;
+            font-size: 0.9em;
+        }
+        .error-actions {
+            margin-top: 30px;
+        }
+        .error-actions a {
+            display: inline-block;
+            margin-right: 10px;
+            padding: 8px 15px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .error-actions a:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>メールマーケティングシステム</h1>
+            <nav>
+                <ul>
+                    <li><a href="/">ホーム</a></li>
+                    <li><a href="/control">コントロールパネル</a></li>
+                    <li><a href="/companies">企業一覧</a></li>
+                    <li><a href="/work_logs">作業記録</a></li>
+                    <li><a href="/manual">取扱説明書</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <div class="error-container">
+                <h2 class="error-title">エラーが発生しました</h2>
+                
+                <div class="error-details">
+                    <p><strong>エラータイプ:</strong> {{ error_type }}</p>
+                    <p><strong>エラーメッセージ:</strong> {{ error }}</p>
+                    {% if path %}
+                    <p><strong>リクエストパス:</strong> {{ path }}</p>
+                    {% endif %}
+                </div>
+                
+                {% if traceback %}
+                <div class="error-traceback">{{ traceback }}</div>
+                {% endif %}
+                
+                <div class="error-timestamp">
+                    <p>発生時刻: {{ timestamp }}</p>
+                </div>
+                
+                <div class="error-actions">
+                    <a href="javascript:history.back()">前のページに戻る</a>
+                    <a href="/">ホームに戻る</a>
+                    <a href="/control">コントロールパネルへ</a>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 メールマーケティングシステム</p>
+        </footer>
+    </div>
+</body>
+</html>

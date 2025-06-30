@@ -1,0 +1,514 @@
+{% extends "base.html" %}
+
+{% block title %}HUGANJOB営業メール送信システム - メインダッシュボード{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% endblock %}
+
+{% block page_title %}HUGANJOB営業メール送信システム{% endblock %}
+{% block page_description %}採用営業メール一括送信・管理システム{% endblock %}
+
+{% block content %}
+        <!-- HUGANJOB統合メール送信制御 -->
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-paper-plane me-2"></i>HUGANJOB統合メール送信
+                        </h5>
+                        <small>huganjob_unified_sender.py --email-format html_only</small>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="startId" class="form-label">開始ID</label>
+                                <input type="number" class="form-control" id="startId" value="4841" min="1">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="endId" class="form-label">終了ID</label>
+                                <input type="number" class="form-control" id="endId" value="4841" min="1">
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <button type="button" class="btn btn-primary btn-lg" onclick="huganjobSend()">
+                                <i class="fas fa-paper-plane me-1"></i>メール送信実行
+                            </button>
+                            <button type="button" class="btn btn-info btn-sm ms-2" onclick="manualStartProgressMonitoring()">
+                                <i class="fas fa-chart-line me-1"></i>進行状況表示
+                            </button>
+                            <div class="mt-2">
+                                <small class="text-muted">
+                                    実行コマンド: <code>python huganjob_unified_sender.py --start-id <span id="cmdStartId">4841</span> --end-id <span id="cmdEndId">4841</span> --email-format html_only</code>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <!-- 🆕 リアルタイム進行状況表示 -->
+                <div class="card mb-4" id="progressCard" style="display: none;">
+                    <div class="card-header bg-success text-white">
+                        <h6 class="card-title mb-0">
+                            <i class="fas fa-chart-line me-2"></i>送信進行状況
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div id="progressInfo">
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between">
+                                    <span>進行状況</span>
+                                    <span id="progressPercent">0%</span>
+                                </div>
+                                <div class="progress">
+                                    <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated"
+                                         role="progressbar" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="row text-center">
+                                <div class="col-6">
+                                    <div class="border-end">
+                                        <div class="h5 mb-0" id="processedCount">0</div>
+                                        <small class="text-muted">処理済み</small>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="h5 mb-0" id="totalCount">0</div>
+                                    <small class="text-muted">総数</small>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <div class="row text-center">
+                                    <div class="col-3">
+                                        <div class="text-success h6 mb-0" id="successCount">0</div>
+                                        <small class="text-muted">成功</small>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="text-danger h6 mb-0" id="failedCount">0</div>
+                                        <small class="text-muted">失敗</small>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="text-warning h6 mb-0" id="skippedCount">0</div>
+                                        <small class="text-muted">スキップ</small>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="text-info h6 mb-0" id="bouncedCount">0</div>
+                                        <small class="text-muted">バウンス</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <small class="text-muted">
+                                    <i class="fas fa-clock me-1"></i>
+                                    残り時間: <span id="estimatedTime">計算中...</span>
+                                </small>
+                            </div>
+                            <div class="mt-2">
+                                <small class="text-muted">
+                                    <i class="fas fa-envelope me-1"></i>
+                                    現在処理中: ID <span id="currentCompany">-</span>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header bg-info text-white">
+                        <h6 class="card-title mb-0">
+                            <i class="fas fa-info-circle me-2"></i>送信設定
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li><i class="fas fa-check text-success me-2"></i>重複送信防止</li>
+                            <li><i class="fas fa-check text-success me-2"></i>バウンス除外</li>
+                            <li><i class="fas fa-check text-success me-2"></i>配信停止チェック</li>
+                            <li><i class="fas fa-check text-success me-2"></i>HTML形式のみ</li>
+                            <li><i class="fas fa-check text-success me-2"></i>5秒送信間隔</li>
+                        </ul>
+                    </div>
+            </div>
+        </div>
+
+        <!-- 直近のプロセス履歴セクション -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-history me-2"></i>直近のプロセス履歴（3件）
+                        </h5>
+                        <button id="refreshHistoryBtn" class="btn btn-sm btn-outline-secondary">更新</button>
+                    </div>
+                    <div class="card-body">
+                        <div id="historyContainer">
+                            {% if recent_history %}
+                            <div class="table-responsive">
+                                <table class="table table-sm table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>プロセス</th>
+                                            <th>コマンド</th>
+                                            <th>開始時刻</th>
+                                            <th>ステータス</th>
+                                            <th>終了コード</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for history in recent_history %}
+                                        <tr>
+                                            <td>
+                                                <span class="badge bg-secondary">{{ history.id }}</span>
+                                            </td>
+                                            <td>
+                                                <code class="small">{{ history.command }}</code>
+                                            </td>
+                                            <td>
+                                                <small class="text-muted">{{ history.start_time }}</small>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-{{ 'success' if history.status == 'completed' else 'primary' if history.status == 'running' else 'warning' if history.status == 'suspicious' else 'danger' }}">
+                                                    {{ '完了' if history.status == 'completed' else '実行中' if history.status == 'running' else '要確認' if history.status == 'suspicious' else 'エラー' if history.status == 'error' else history.status }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                {% if history.return_code is not none %}
+                                                    <span class="badge bg-{{ 'success' if history.return_code == 0 else 'danger' }}">
+                                                        {{ history.return_code }}
+                                                    </span>
+                                                {% else %}
+                                                    <span class="text-muted">-</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <div class="text-center text-muted py-3">
+                                <i class="fas fa-clock fa-2x mb-2"></i>
+                                <p class="mb-0">プロセス履歴がありません</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+<script>
+
+
+    // ID入力フィールドの値が変更されたときにコマンド表示を更新
+    function updateCommand() {
+        const startId = document.getElementById('startId').value;
+        const endId = document.getElementById('endId').value;
+        document.getElementById('cmdStartId').textContent = startId;
+        document.getElementById('cmdEndId').textContent = endId;
+    }
+
+    // HUGANJOB統合メール送信
+    function huganjobSend() {
+        const startId = document.getElementById('startId').value;
+        const endId = document.getElementById('endId').value;
+
+        if (confirm(`HUGANJOB統合メール送信を実行しますか？\n\n対象: ID ${startId}-${endId}\n\n実行コマンド:\npython huganjob_unified_sender.py --start-id ${startId} --end-id ${endId} --email-format html_only\n\n⚠️ 実際の営業メールが送信されます`)) {
+            fetch('/api/huganjob/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    start_id: parseInt(startId),
+                    end_id: parseInt(endId)
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                let message = data.success ? data.message : 'エラー: ' + data.message;
+                if (data.success && data.command) {
+                    message += '\n\n実行コマンド: ' + data.command;
+                    // 🆕 送信開始時に進行状況監視を開始
+                    if (data.process_id) {
+                        startProgressMonitoring(data.process_id);
+                    }
+                }
+                alert(message);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('エラーが発生しました');
+            });
+        }
+    }
+
+    // 🆕 進行状況監視機能
+    let progressMonitoringInterval = null;
+
+    function startProgressMonitoring(processId) {
+        console.log('🚀 進行状況監視開始:', processId);
+
+        // 進行状況カードを表示
+        const progressCard = document.getElementById('progressCard');
+        if (progressCard) {
+            progressCard.style.display = 'block';
+            console.log('✅ 進行状況カード表示');
+        } else {
+            console.error('❌ 進行状況カードが見つかりません');
+            return;
+        }
+
+        // 既存の監視を停止
+        if (progressMonitoringInterval) {
+            clearInterval(progressMonitoringInterval);
+        }
+
+        // 定期的に進行状況を更新（3秒間隔）
+        progressMonitoringInterval = setInterval(() => {
+            updateProgress(processId);
+        }, 3000);
+
+        // 初回更新
+        updateProgress(processId);
+        console.log('⏰ 進行状況監視タイマー開始（3秒間隔）');
+    }
+
+    function updateProgress(processId) {
+        console.log('📊 進行状況更新中...', processId);
+
+        // アクティブプロセスAPIを使用
+        fetch('/api/huganjob/active_processes')
+            .then(response => response.json())
+            .then(data => {
+                console.log('📈 進行状況データ:', data);
+
+                if (data.success && data.processes && data.processes.length > 0) {
+                    // 指定されたプロセスIDまたは最初のプロセスを使用
+                    let targetProcess = data.processes.find(p => p.process_id === processId);
+                    if (!targetProcess) {
+                        targetProcess = data.processes[0]; // フォールバック
+                    }
+
+                    const progress = targetProcess.progress;
+                    console.log('🎯 プロセス進行状況:', progress);
+
+                    if (progress && progress.type === 'huganjob_unified_sender') {
+                        // 進行状況を更新
+                        updateProgressDisplay(progress);
+
+                        // プロセスが完了した場合は監視を停止
+                        if (targetProcess.status === 'completed' || targetProcess.status === 'error') {
+                            console.log('🏁 プロセス完了検出:', targetProcess.status);
+                            stopProgressMonitoring();
+                        }
+                    } else {
+                        console.log('⚠️ HUGANJOB統合送信プロセスではありません');
+                    }
+                } else {
+                    console.log('❌ アクティブなプロセスなし - 監視停止');
+                    // アクティブなプロセスがない場合は監視を停止
+                    stopProgressMonitoring();
+                }
+            })
+            .catch(error => {
+                console.error('❌ 進行状況取得エラー:', error);
+
+                // エラー時は一般プロセスAPIを試す
+                fetch('/api/get_active_processes')
+                    .then(response => response.json())
+                    .then(generalData => {
+                        if (generalData && Array.isArray(generalData)) {
+                            const huganjobProcess = generalData.find(p =>
+                                p.command && p.command.includes('huganjob_unified_sender')
+                            );
+
+                            if (!huganjobProcess) {
+                                console.log('❌ 一般プロセスAPIでもHUGANJOBプロセス見つからず');
+                                stopProgressMonitoring();
+                            }
+                        }
+                    })
+                    .catch(fallbackError => {
+                        console.error('フォールバックエラー:', fallbackError);
+                    });
+            });
+    }
+
+    function updateProgressDisplay(progress) {
+        // 進行率
+        const percent = progress.progress_percent || 0;
+        document.getElementById('progressPercent').textContent = percent + '%';
+        document.getElementById('progressBar').style.width = percent + '%';
+
+        // 処理数
+        document.getElementById('processedCount').textContent = progress.processed_companies || 0;
+        document.getElementById('totalCount').textContent = progress.total_companies || 0;
+
+        // 結果統計
+        document.getElementById('successCount').textContent = progress.success_count || 0;
+        document.getElementById('failedCount').textContent = progress.failed_count || 0;
+        document.getElementById('skippedCount').textContent = progress.skipped_count || 0;
+        document.getElementById('bouncedCount').textContent = progress.bounced_count || 0;
+
+        // 残り時間
+        document.getElementById('estimatedTime').textContent = progress.estimated_remaining_time || '計算中...';
+
+        // 現在処理中の企業
+        document.getElementById('currentCompany').textContent = progress.current_company || '-';
+
+        // 進行率に応じてプログレスバーの色を変更
+        const progressBar = document.getElementById('progressBar');
+        if (percent >= 100) {
+            progressBar.className = 'progress-bar bg-success';
+        } else if (percent >= 50) {
+            progressBar.className = 'progress-bar progress-bar-striped progress-bar-animated bg-info';
+        } else {
+            progressBar.className = 'progress-bar progress-bar-striped progress-bar-animated';
+        }
+    }
+
+    function stopProgressMonitoring() {
+        console.log('🛑 進行状況監視停止');
+
+        if (progressMonitoringInterval) {
+            clearInterval(progressMonitoringInterval);
+            progressMonitoringInterval = null;
+        }
+
+        // 完了後3秒で進行状況カードを非表示
+        setTimeout(() => {
+            const progressCard = document.getElementById('progressCard');
+            if (progressCard) {
+                progressCard.style.display = 'none';
+                console.log('📱 進行状況カード非表示');
+            }
+        }, 3000);
+    }
+
+    // 🆕 手動で進行状況監視を開始
+    function manualStartProgressMonitoring() {
+        console.log('🔧 手動進行状況監視開始');
+
+        // まず既存プロセスをチェック
+        fetch('/api/huganjob/active_processes')
+            .then(response => response.json())
+            .then(data => {
+                console.log('📊 手動チェック結果:', data);
+
+                if (data.success && data.processes && data.processes.length > 0) {
+                    const process = data.processes[0];
+                    console.log('✅ アクティブプロセス発見:', process.process_id);
+                    startProgressMonitoring(process.process_id);
+
+                    // 成功メッセージ
+                    alert(`進行状況監視を開始しました\nプロセスID: ${process.process_id}\n範囲: ID ${process.progress.start_id || '?'}-${process.progress.end_id || '?'}`);
+                } else {
+                    console.log('❌ アクティブプロセスなし');
+                    alert('現在実行中のHUGANJOB統合送信プロセスが見つかりません');
+                }
+            })
+            .catch(error => {
+                console.error('❌ 手動チェックエラー:', error);
+                alert('進行状況チェックでエラーが発生しました');
+            });
+    }
+
+    // ID入力フィールドのイベントリスナー
+    document.addEventListener('DOMContentLoaded', function() {
+        const startIdField = document.getElementById('startId');
+        const endIdField = document.getElementById('endId');
+
+        if (startIdField) {
+            startIdField.addEventListener('input', updateCommand);
+        }
+        if (endIdField) {
+            endIdField.addEventListener('input', updateCommand);
+        }
+
+        // 初期表示時にコマンドを更新
+        updateCommand();
+
+        // 🆕 ページ読み込み時に既存のプロセスをチェック
+        checkExistingProgress();
+    });
+
+    function checkExistingProgress() {
+        console.log('🔍 既存プロセスをチェック中...');
+
+        // まず、アクティブプロセスAPIを試す
+        fetch('/api/huganjob/active_processes')
+            .then(response => response.json())
+            .then(data => {
+                console.log('📊 アクティブプロセス応答:', data);
+
+                if (data.success && data.processes && data.processes.length > 0) {
+                    console.log(`✅ ${data.processes.length}個のアクティブプロセスを発見`);
+
+                    // 最初のアクティブプロセスで監視開始
+                    const process = data.processes[0];
+                    console.log('🎯 監視開始プロセス:', process.process_id);
+                    startProgressMonitoring(process.process_id);
+                } else {
+                    console.log('📝 アクティブなHUGANJOBプロセスなし');
+
+                    // 代替として、一般的なプロセスAPIを試す
+                    fetch('/api/get_active_processes')
+                        .then(response => response.json())
+                        .then(generalData => {
+                            console.log('📋 一般プロセス応答:', generalData);
+
+                            if (generalData && Array.isArray(generalData)) {
+                                const huganjobProcess = generalData.find(p =>
+                                    p.command && p.command.includes('huganjob_unified_sender')
+                                );
+
+                                if (huganjobProcess) {
+                                    console.log('🎯 一般プロセスから発見:', huganjobProcess.id);
+                                    startProgressMonitoring(huganjobProcess.id);
+                                } else {
+                                    console.log('❌ HUGANJOBプロセスが見つかりません');
+                                }
+                            }
+                        })
+                        .catch(error => {
+                            console.error('一般プロセスAPI エラー:', error);
+                        });
+                }
+            })
+            .catch(error => {
+                console.error('❌ アクティブプロセスAPI エラー:', error);
+
+                // エラー時も一般プロセスAPIを試す
+                fetch('/api/get_active_processes')
+                    .then(response => response.json())
+                    .then(generalData => {
+                        console.log('📋 フォールバック - 一般プロセス応答:', generalData);
+
+                        if (generalData && Array.isArray(generalData)) {
+                            const huganjobProcess = generalData.find(p =>
+                                p.command && p.command.includes('huganjob_unified_sender')
+                            );
+
+                            if (huganjobProcess) {
+                                console.log('🎯 フォールバックで発見:', huganjobProcess.id);
+                                startProgressMonitoring(huganjobProcess.id);
+                            }
+                        }
+                    })
+                    .catch(fallbackError => {
+                        console.error('フォールバックAPI エラー:', fallbackError);
+                    });
+            });
+    }
+
+
+
+
+
+</script>
+{% endblock %}

@@ -1,0 +1,1220 @@
+{
+  "sending_records": [
+    {
+      "company_id": 1,
+      "company_name": "エスケー化研株式会社",
+      "email_address": "info@sk-kaken.co.jp",
+      "send_time": "2025-06-23T12:35:15.000000",
+      "script_name": "huganjob_unified_sender.py",
+      "pid": 12345
+    },
+    {
+      "company_id": 2,
+      "company_name": "ラ・シンシア株式会社",
+      "email_address": "info@sincere.co.jp",
+      "send_time": "2025-06-23T12:35:20.000000",
+      "script_name": "huganjob_unified_sender.py",
+      "pid": 12345
+    },
+    {
+      "company_id": 3,
+      "company_name": "日本セロンパック株式会社",
+      "email_address": "info@cellonpack.com",
+      "send_time": "2025-06-23T12:35:25.000000",
+      "script_name": "huganjob_unified_sender.py",
+      "pid": 12345
+    },
+    {
+      "company_id": 4,
+      "company_name": "西日本旅客鉄道株式会社",
+      "email_address": "info@westjr.co.jp",
+      "send_time": "2025-06-23T12:35:30.000000",
+      "script_name": "huganjob_unified_sender.py",
+      "pid": 12345
+    },
+    {
+      "company_id": 5,
+      "company_name": "クルーズカンパニー株式会社",
+      "email_address": "info@crewz.co.jp",
+      "send_time": "2025-06-23T12:35:35.000000",
+      "script_name": "huganjob_unified_sender.py",
+      "pid": 12345
+    },
+    {
+      "company_id": 6,
+      "company_name": "学校法人文際学園",
+      "email_address": "info@www.osakagaigo.ac.jp",
+      "send_time": "2025-06-23T12:38:36.766104",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 28300
+    },
+    {
+      "company_id": 7,
+      "company_name": "ハウスホールドジャパン株式会社",
+      "email_address": "info@www.h2j.jp",
+      "send_time": "2025-06-23T12:38:41.934111",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 28300
+    },
+    {
+      "company_id": 8,
+      "company_name": "株式会社オリエンタルベーカリー",
+      "email_address": "info@www.orientalbakery.co.jp",
+      "send_time": "2025-06-23T12:39:46.563096",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 4532
+    },
+    {
+      "company_id": 9,
+      "company_name": "株式会社フレックス",
+      "email_address": "info@www.flex-og.jp",
+      "send_time": "2025-06-23T12:39:51.681977",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 4532
+    },
+    {
+      "company_id": 10,
+      "company_name": "株式会社青井黒板製作所",
+      "email_address": "info@www.aoikokuban.co.jp",
+      "send_time": "2025-06-23T12:39:56.874527",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 4532
+    },
+    {
+      "company_id": 11,
+      "company_name": "阪栄株式会社",
+      "email_address": "info@www.hanei-co.jp",
+      "send_time": "2025-06-23T13:05:14.900654",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 29612
+    },
+    {
+      "company_id": 12,
+      "company_name": "株式会社CROSS CORPORATION",
+      "email_address": "info@www.crosscorporation.co.jp",
+      "send_time": "2025-06-23T13:05:20.235991",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 29612
+    },
+    {
+      "company_id": 13,
+      "company_name": "小西マーク株式会社",
+      "email_address": "info@www.konishi-mark.com",
+      "send_time": "2025-06-23T13:05:25.524753",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 29612
+    },
+    {
+      "company_id": 14,
+      "company_name": "ソマックス株式会社",
+      "email_address": "info@www.somax.co.jp",
+      "send_time": "2025-06-23T13:05:30.732821",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 29612
+    },
+    {
+      "company_id": 15,
+      "company_name": "日機株式会社",
+      "email_address": "info@www.nikki-tr.co.jp",
+      "send_time": "2025-06-23T13:05:36.011565",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 29612
+    },
+    {
+      "company_id": 16,
+      "company_name": "株式会社アンフ・スタイル",
+      "email_address": "info@unf-style.com",
+      "send_time": "2025-06-23T13:16:54.272593",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 1164
+    },
+    {
+      "company_id": 17,
+      "company_name": "ローゼン製菓株式会社",
+      "email_address": "info@www.manneken.co.jp",
+      "send_time": "2025-06-23T13:16:59.445531",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 1164
+    },
+    {
+      "company_id": 18,
+      "company_name": "アルインコ株式会社",
+      "email_address": "info@alinco.co.jp",
+      "send_time": "2025-06-23T13:17:04.634592",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 1164
+    },
+    {
+      "company_id": 19,
+      "company_name": "株式会社キンキセフテイ",
+      "email_address": "info@kinkisefutei.co.jp",
+      "send_time": "2025-06-23T13:17:09.844033",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 1164
+    },
+    {
+      "company_id": 20,
+      "company_name": "株式会社シードアシスト",
+      "email_address": "info@www.seedassist.co.jp",
+      "send_time": "2025-06-23T13:17:15.021148",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 1164
+    },
+    {
+      "company_id": 21,
+      "company_name": "株式会社アドバンス一世",
+      "email_address": "info@www.advance-1st.co.jp",
+      "send_time": "2025-06-23T13:17:20.155117",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 1164
+    },
+    {
+      "company_id": 22,
+      "company_name": "光徳電興株式会社",
+      "email_address": "info@www.koutokudenkou.co.jp",
+      "send_time": "2025-06-23T13:17:25.297949",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 1164
+    },
+    {
+      "company_id": 23,
+      "company_name": "株式会社テルテルアドバンス",
+      "email_address": "info@www.teruteru.co.jp",
+      "send_time": "2025-06-23T13:17:30.448567",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 1164
+    },
+    {
+      "company_id": 24,
+      "company_name": "株式会社トラスト",
+      "email_address": "info@recruit-trust.jp",
+      "send_time": "2025-06-23T13:17:35.574094",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 1164
+    },
+    {
+      "company_id": 25,
+      "company_name": "株式会社月虎金属",
+      "email_address": "info@www.tsukitora.com",
+      "send_time": "2025-06-23T13:17:40.697289",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 1164
+    },
+    {
+      "company_id": 26,
+      "company_name": "株式会社浪速技建",
+      "email_address": "info@www.naniwakanri.co.jp",
+      "send_time": "2025-06-23T13:19:57.998314",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 24616
+    },
+    {
+      "company_id": 27,
+      "company_name": "林一二株式会社",
+      "email_address": "info@www.hayashikazuji.co.jp",
+      "send_time": "2025-06-23T13:20:03.245910",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 24616
+    },
+    {
+      "company_id": 29,
+      "company_name": "株式会社アイレス",
+      "email_address": "info@www.iress.jp",
+      "send_time": "2025-06-23T13:20:13.537141",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 24616
+    },
+    {
+      "company_id": 30,
+      "company_name": "株式会社AIE",
+      "email_address": "info@www.aiengineering.jp",
+      "send_time": "2025-06-23T13:20:18.739059",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 24616
+    },
+    {
+      "company_id": 31,
+      "company_name": "株式会社キリン・エンジニアリング・サービス",
+      "email_address": "info@www.kirin-e-s.co.jp",
+      "send_time": "2025-06-23T13:20:23.867883",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 24616
+    },
+    {
+      "company_id": 32,
+      "company_name": "株式会社リブ・クリエート",
+      "email_address": "info@www.live-create.co.jp",
+      "send_time": "2025-06-23T13:20:28.991006",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 24616
+    },
+    {
+      "company_id": 33,
+      "company_name": "インプルーブ株式会社",
+      "email_address": "info@im-prove.co.jp",
+      "send_time": "2025-06-23T13:20:34.168831",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 24616
+    },
+    {
+      "company_id": 34,
+      "company_name": "理水化学株式会社",
+      "email_address": "info@risui-kagaku.co.jp",
+      "send_time": "2025-06-23T13:20:39.317431",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 24616
+    },
+    {
+      "company_id": 35,
+      "company_name": "株式会社天政松下",
+      "email_address": "info@www.tenmasamatsushita.co.jp",
+      "send_time": "2025-06-23T13:20:44.453121",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 24616
+    },
+    {
+      "company_id": 36,
+      "company_name": "東レ株式会社",
+      "email_address": "info@www.toray.co.jp",
+      "send_time": "2025-06-23T13:20:49.574101",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 24616
+    },
+    {
+      "company_id": 37,
+      "company_name": "株式会社アルトナー",
+      "email_address": "info@www.artner.co.jp",
+      "send_time": "2025-06-23T13:20:54.723447",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 24616
+    },
+    {
+      "company_id": 38,
+      "company_name": "株式会社Ryuki Design",
+      "email_address": "info@recruit.ryuki-design.jp",
+      "send_time": "2025-06-23T13:20:59.934822",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 24616
+    },
+    {
+      "company_id": 39,
+      "company_name": "読売テレビ放送株式会社",
+      "email_address": "info@www.ytv.co.jp",
+      "send_time": "2025-06-23T13:21:05.073765",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 24616
+    },
+    {
+      "company_id": 40,
+      "company_name": "パーソルエクセルHRパートナーズ株式会社",
+      "email_address": "info@persol-hrpartners.co.jp",
+      "send_time": "2025-06-23T13:21:10.194554",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 24616
+    },
+    {
+      "company_id": 41,
+      "company_name": "大光電機株式会社",
+      "email_address": "info@www.lighting-daiko.co.jp",
+      "send_time": "2025-06-23T13:21:15.312845",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 24616
+    },
+    {
+      "company_id": 42,
+      "company_name": "一般財団法人 関西電気保安協会",
+      "email_address": "info@www.ksdh.or.jp",
+      "send_time": "2025-06-23T13:21:20.460031",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 24616
+    },
+    {
+      "company_id": 43,
+      "company_name": "キンリューフーズ株式会社",
+      "email_address": "info@www.kinryu-foods.co.jp",
+      "send_time": "2025-06-23T13:21:25.609778",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 24616
+    },
+    {
+      "company_id": 44,
+      "company_name": "山九近畿サービス株式会社",
+      "email_address": "info@sankyu-sks.com",
+      "send_time": "2025-06-23T13:21:30.739566",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 24616
+    },
+    {
+      "company_id": 45,
+      "company_name": "三栄薬品貿易株式会社",
+      "email_address": "info@www.sanei-yakuhin.co.jp",
+      "send_time": "2025-06-23T13:21:35.849166",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 24616
+    },
+    {
+      "company_id": 46,
+      "company_name": "日清食品株式会社",
+      "email_address": "info@www.nissin.com",
+      "send_time": "2025-06-23T13:21:41.020032",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 24616
+    },
+    {
+      "company_id": 47,
+      "company_name": "寿精版印刷株式会社",
+      "email_address": "info@www.rex.co.jp",
+      "send_time": "2025-06-23T13:21:46.182152",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 24616
+    },
+    {
+      "company_id": 48,
+      "company_name": "株式会社マエカワ",
+      "email_address": "info@www.kk-maekawa.co.jp",
+      "send_time": "2025-06-23T13:21:51.388688",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 24616
+    },
+    {
+      "company_id": 49,
+      "company_name": "社会福祉法人優光福祉会",
+      "email_address": "info@d-sawayakaen.com",
+      "send_time": "2025-06-23T13:21:56.531089",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 24616
+    },
+    {
+      "company_id": 50,
+      "company_name": "株式会社askme",
+      "email_address": "info@www.askme.co.jp",
+      "send_time": "2025-06-23T13:22:01.743335",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 24616
+    },
+    {
+      "company_id": 51,
+      "company_name": "株式会社キャスト",
+      "email_address": "info@castnet.co.jp",
+      "send_time": "2025-06-23T13:29:10.205881",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 3316
+    },
+    {
+      "company_id": 52,
+      "company_name": "山本技研工機株式会社",
+      "email_address": "info@yamamotogiken-kohki.co.jp",
+      "send_time": "2025-06-23T14:31:07.432188",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 53,
+      "company_name": "株式会社ビジョンメガネ",
+      "email_address": "info@vision-megane.co.jp",
+      "send_time": "2025-06-23T14:31:12.621113",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 54,
+      "company_name": "株式会社哲建",
+      "email_address": "info@tekken-web.co.jp",
+      "send_time": "2025-06-23T14:31:17.832568",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 55,
+      "company_name": "富士産業株式会社",
+      "email_address": "info@fuji-sangyou.co.jp",
+      "send_time": "2025-06-23T14:31:23.022903",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 56,
+      "company_name": "学校法人修成学園",
+      "email_address": "info@syusei.ac.jp",
+      "send_time": "2025-06-23T14:31:28.177279",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 57,
+      "company_name": "西日本高速道路エンジニアリング関西株式会社",
+      "email_address": "info@w-e-kansai.co.jp",
+      "send_time": "2025-06-23T14:31:33.310177",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 58,
+      "company_name": "株式会社住まいるコム",
+      "email_address": "info@smilecom.co.jp",
+      "send_time": "2025-06-23T14:31:38.428208",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 59,
+      "company_name": "ジーベック株式会社",
+      "email_address": "info@xebec-net.co.jp",
+      "send_time": "2025-06-23T14:31:43.601244",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 60,
+      "company_name": "株式会社東京海上日動パートナーズかんさい",
+      "email_address": "info@tnpgrp.co.jp",
+      "send_time": "2025-06-23T14:31:48.733878",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 61,
+      "company_name": "株式会社ハウゼコ",
+      "email_address": "info@hauseco.jp",
+      "send_time": "2025-06-23T14:31:53.903153",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 62,
+      "company_name": "関包スチール株式会社",
+      "email_address": "info@kanpoh.co.jp",
+      "send_time": "2025-06-23T14:31:59.019720",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 63,
+      "company_name": "株式会社高洋商会",
+      "email_address": "info@kouyou-shokai.co.jp",
+      "send_time": "2025-06-23T14:32:04.284833",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 64,
+      "company_name": "株式会社成学社",
+      "email_address": "info@kaisei-group.co.jp",
+      "send_time": "2025-06-23T14:32:09.417403",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 65,
+      "company_name": "エルベオート株式会社",
+      "email_address": "info@elbe.bmw.jp",
+      "send_time": "2025-06-23T14:32:14.576782",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 66,
+      "company_name": "オルディ株式会社",
+      "email_address": "info@ordiy.com",
+      "send_time": "2025-06-23T14:32:19.724599",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 67,
+      "company_name": "興和化学産業株式会社",
+      "email_address": "info@kowa-chem.co.jp",
+      "send_time": "2025-06-23T14:32:24.841251",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 68,
+      "company_name": "株式会社ビショップ",
+      "email_address": "info@bishopinc.jp",
+      "send_time": "2025-06-23T14:32:30.039812",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 69,
+      "company_name": "株式会社セルア",
+      "email_address": "info@cellua.jp",
+      "send_time": "2025-06-23T14:32:35.204277",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 70,
+      "company_name": "株式会社広栄",
+      "email_address": "info@koeisys.jp",
+      "send_time": "2025-06-23T14:32:40.382573",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 71,
+      "company_name": "株式会社GS電池商会",
+      "email_address": "info@gsdenchi.co.jp",
+      "send_time": "2025-06-23T14:32:45.490942",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 72,
+      "company_name": "株式会社プラスバイプラス",
+      "email_address": "info@pluscad.jp",
+      "send_time": "2025-06-23T14:32:50.614243",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 73,
+      "company_name": "株式会社YTE",
+      "email_address": "info@yte.co.jp",
+      "send_time": "2025-06-23T14:32:55.745121",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 74,
+      "company_name": "株式会社アローズコーポレーション",
+      "email_address": "info@e-arrows.com",
+      "send_time": "2025-06-23T14:33:00.868144",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 75,
+      "company_name": "株式会社アネーラ",
+      "email_address": "info@e-anela.com",
+      "send_time": "2025-06-23T14:33:06.100838",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 76,
+      "company_name": "株式会社放水社",
+      "email_address": "info@housuisha.co.jp",
+      "send_time": "2025-06-23T14:33:11.265005",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 77,
+      "company_name": "株式会社ポアール",
+      "email_address": "info@poire.co.jp",
+      "send_time": "2025-06-23T14:33:16.431532",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 78,
+      "company_name": "Ｓｋｙ株式会社",
+      "email_address": "info@skygroup.jp",
+      "send_time": "2025-06-23T14:33:21.561077",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 79,
+      "company_name": "株式会社三邦",
+      "email_address": "info@sunpoh.co.jp",
+      "send_time": "2025-06-23T14:33:26.793833",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 80,
+      "company_name": "株式会社近鉄・都ホテルズ",
+      "email_address": "info@miyakohotels.ne.jp",
+      "send_time": "2025-06-23T14:33:31.919200",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 81,
+      "company_name": "株式会社阪急阪神百貨店",
+      "email_address": "info@hankyu-hanshin-dept.co.jp",
+      "send_time": "2025-06-23T14:33:37.043087",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 82,
+      "company_name": "サンヨー航空サービス株式会社",
+      "email_address": "info@sanyo-kix.com",
+      "send_time": "2025-06-23T14:33:42.221051",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 83,
+      "company_name": "株式会社ダイツー",
+      "email_address": "info@daitsu-g.co.jp",
+      "send_time": "2025-06-23T14:33:47.393217",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 84,
+      "company_name": "税理士法人 いろは",
+      "email_address": "info@iroha-tax.or.jp",
+      "send_time": "2025-06-23T14:33:52.829037",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 85,
+      "company_name": "進栄化成株式会社",
+      "email_address": "info@shineikasei.com",
+      "send_time": "2025-06-23T14:33:57.968538",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 86,
+      "company_name": "久森電気工業株式会社",
+      "email_address": "info@hisamori-denki.co.jp",
+      "send_time": "2025-06-23T14:34:04.190581",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 87,
+      "company_name": "株式会社三輝",
+      "email_address": "info@sk-dogrunhill.com",
+      "send_time": "2025-06-23T14:34:09.307788",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 88,
+      "company_name": "エルスイッチ株式会社",
+      "email_address": "info@lswitch.co.jp",
+      "send_time": "2025-06-23T14:34:14.419100",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 89,
+      "company_name": "旭マシナリー株式会社",
+      "email_address": "info@asahi-mac.co.jp",
+      "send_time": "2025-06-23T14:34:19.558430",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 90,
+      "company_name": "株式会社京阪ザ・ストア",
+      "email_address": "info@keihan-the-store.jp",
+      "send_time": "2025-06-23T14:34:24.696562",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 91,
+      "company_name": "株式会社KOSMO",
+      "email_address": "info@kosmo.co.jp",
+      "send_time": "2025-06-23T14:34:29.855348",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 92,
+      "company_name": "太陽ファスナー株式会社",
+      "email_address": "info@taiyo-fastener.co.jp",
+      "send_time": "2025-06-23T14:34:35.022828",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 93,
+      "company_name": "株式会社オンテックス",
+      "email_address": "info@ontex-recruit.jp",
+      "send_time": "2025-06-23T14:34:40.195358",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 94,
+      "company_name": "住友化学株式会社",
+      "email_address": "info@sumitomo-chem.co.jp",
+      "send_time": "2025-06-23T14:34:45.360230",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 95,
+      "company_name": "パークプラン株式会社",
+      "email_address": "info@parkplan.co.jp",
+      "send_time": "2025-06-23T14:34:50.517547",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 96,
+      "company_name": "シンワ株式会社",
+      "email_address": "info@shinw.co.jp",
+      "send_time": "2025-06-23T14:34:55.685518",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 97,
+      "company_name": "株式会社エイエイエスケータリング",
+      "email_address": "info@aascatering.co.jp",
+      "send_time": "2025-06-23T14:35:00.794034",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 98,
+      "company_name": "有限会社アビーズ3",
+      "email_address": "info@abies-3.co.jp",
+      "send_time": "2025-06-23T14:35:06.003413",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 99,
+      "company_name": "綜合メディカル株式会社",
+      "email_address": "info@sougoumedical.jp",
+      "send_time": "2025-06-23T14:35:11.138009",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 100,
+      "company_name": "八千代電設工業株式会社",
+      "email_address": "info@yachiyo.co.jp",
+      "send_time": "2025-06-23T14:35:16.285867",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 20968
+    },
+    {
+      "company_id": 101,
+      "company_name": "株式会社マルカン",
+      "email_address": "info@mkgr.jp",
+      "send_time": "2025-06-23T14:45:54.135963",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 29464
+    },
+    {
+      "company_id": 102,
+      "company_name": "社会保険労務士法人ＴＳＣ",
+      "email_address": "info@cacgr.co.jp",
+      "send_time": "2025-06-23T14:46:05.398530",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 29592
+    },
+    {
+      "company_id": 103,
+      "company_name": "セイブ化成株式会社",
+      "email_address": "info@seibu-kasei.co.jp",
+      "send_time": "2025-06-23T14:46:10.608929",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 29592
+    },
+    {
+      "company_id": 104,
+      "company_name": "リッツハウジング株式会社",
+      "email_address": "info@c21-takatsuki-r.jp",
+      "send_time": "2025-06-23T14:46:15.758146",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 29592
+    },
+    {
+      "company_id": 105,
+      "company_name": "株式会社アーヴェスト",
+      "email_address": "info@arvest.jp",
+      "send_time": "2025-06-23T14:46:20.928459",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 29592
+    },
+    {
+      "company_id": 175,
+      "company_name": "株式会社ワーキテクノ",
+      "email_address": "info@wa-ki.jp",
+      "send_time": "2025-06-23T15:14:03.141369",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 18268
+    },
+    {
+      "company_id": 215,
+      "company_name": "株式会社フジワーク",
+      "email_address": "info@fujiwork.co.jp",
+      "send_time": "2025-06-23T15:15:42.297561",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23184
+    },
+    {
+      "company_id": 294,
+      "company_name": "興産管理サービス・西日本株式会社",
+      "email_address": "info@mo-kosan.co.jp",
+      "send_time": "2025-06-23T15:23:16.932775",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 27728
+    },
+    {
+      "company_id": 106,
+      "company_name": "株式会社サンアップ",
+      "email_address": "info@sunup.co.jp",
+      "send_time": "2025-06-23T15:27:21.597624",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 107,
+      "company_name": "株式会社アスパーク",
+      "email_address": "info@aspark.co.jp",
+      "send_time": "2025-06-23T15:27:26.809999",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 109,
+      "company_name": "スイスポートジャパン株式会社",
+      "email_address": "info@swissport.co.jp",
+      "send_time": "2025-06-23T15:27:32.050320",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 110,
+      "company_name": "細田工業株式会社",
+      "email_address": "info@hosoda.jp",
+      "send_time": "2025-06-23T15:27:37.219129",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 111,
+      "company_name": "株式会社マサキ屋",
+      "email_address": "info@masaki-ya.jp",
+      "send_time": "2025-06-23T15:27:42.347829",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 112,
+      "company_name": "株式会社海部建設",
+      "email_address": "info@kaifukensetsu.com",
+      "send_time": "2025-06-23T15:27:47.478804",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 113,
+      "company_name": "日大工業株式会社",
+      "email_address": "info@nichidai.net",
+      "send_time": "2025-06-23T15:27:52.606784",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 114,
+      "company_name": "有限会社大東管工",
+      "email_address": "info@daitou-kankou.jp",
+      "send_time": "2025-06-23T15:27:57.741452",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 115,
+      "company_name": "株式会社エステム建築事務所",
+      "email_address": "info@estem-ao.co.jp",
+      "send_time": "2025-06-23T15:28:02.878275",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 116,
+      "company_name": "株式会社トライトキャリア",
+      "email_address": "info@tryt-group.co.jp",
+      "send_time": "2025-06-23T15:28:08.027986",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 117,
+      "company_name": "株式会社ダスキン",
+      "email_address": "info@duskin.co.jp",
+      "send_time": "2025-06-23T15:28:13.200956",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 118,
+      "company_name": "株式会社チクマ",
+      "email_address": "info@chikuma.co.jp",
+      "send_time": "2025-06-23T15:28:18.347732",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 119,
+      "company_name": "株式会社山口薬品商会",
+      "email_address": "info@yamaguchi-net.com",
+      "send_time": "2025-06-23T15:28:23.482768",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 120,
+      "company_name": "明和通信工業株式会社",
+      "email_address": "info@meiwa-tsushin.co.jp",
+      "send_time": "2025-06-23T15:28:28.650547",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 121,
+      "company_name": "株式会社小林製作所",
+      "email_address": "info@wink-jp.com",
+      "send_time": "2025-06-23T15:28:33.844061",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 122,
+      "company_name": "株式会社大和屋本店",
+      "email_address": "info@yamatoyahonten.co.jp",
+      "send_time": "2025-06-23T15:28:39.005294",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 123,
+      "company_name": "株式会社西日本設計",
+      "email_address": "info@nishinihon-s.co.jp",
+      "send_time": "2025-06-23T15:28:44.165184",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 124,
+      "company_name": "株式会社ダイセル",
+      "email_address": "info@daicel.com",
+      "send_time": "2025-06-23T15:28:49.611259",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 125,
+      "company_name": "株式会社アプロワーク",
+      "email_address": "info@apuro-work.com",
+      "send_time": "2025-06-23T15:28:54.751164",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 126,
+      "company_name": "小厚化成株式会社",
+      "email_address": "info@shocoh.co.jp",
+      "send_time": "2025-06-23T15:28:59.937221",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 127,
+      "company_name": "株式会社エスケイジャパン",
+      "email_address": "info@sk-japan.co.jp",
+      "send_time": "2025-06-23T15:29:05.107032",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 128,
+      "company_name": "株式会社NTTデータ関西",
+      "email_address": "info@nttdata-kansai.co.jp",
+      "send_time": "2025-06-23T15:29:10.332479",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 129,
+      "company_name": "住友生命保険相互会社",
+      "email_address": "info@sumitomolife.co.jp",
+      "send_time": "2025-06-23T15:29:15.473729",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 130,
+      "company_name": "タイセイ株式会社",
+      "email_address": "info@taisei.ne.jp",
+      "send_time": "2025-06-23T15:29:20.626350",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 131,
+      "company_name": "嶋田電機株式会社",
+      "email_address": "info@shimadaelec.co.jp",
+      "send_time": "2025-06-23T15:29:25.762403",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 132,
+      "company_name": "株式会社カプコン",
+      "email_address": "info@capcom.co.jp",
+      "send_time": "2025-06-23T15:29:30.901341",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 133,
+      "company_name": "株式会社東和総合サービス",
+      "email_address": "info@to-wa.info",
+      "send_time": "2025-06-23T15:29:36.037045",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 134,
+      "company_name": "株式会社ジェイエスエス",
+      "email_address": "info@jss-group.co.jp",
+      "send_time": "2025-06-23T15:29:41.164330",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 135,
+      "company_name": "株式会社ピンスポット",
+      "email_address": "info@pinspot.co.jp",
+      "send_time": "2025-06-23T15:29:46.366061",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 136,
+      "company_name": "株式会社クリエイティブワン",
+      "email_address": "info@creativeone.co.jp",
+      "send_time": "2025-06-23T15:29:51.489696",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 137,
+      "company_name": "株式会社ディー・ケイ",
+      "email_address": "info@dk-corp.co.jp",
+      "send_time": "2025-06-23T15:29:56.623101",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 138,
+      "company_name": "西尾レントオール株式会社",
+      "email_address": "info@nishio-rent.co.jp",
+      "send_time": "2025-06-23T15:30:01.860748",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 139,
+      "company_name": "株式会社オーツー",
+      "email_address": "info@otu.co.jp",
+      "send_time": "2025-06-23T15:30:07.044976",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 140,
+      "company_name": "株式会社ジェイブ",
+      "email_address": "info@jvb.co.jp",
+      "send_time": "2025-06-23T15:30:12.192104",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 141,
+      "company_name": "株式会社サカイ引越センター",
+      "email_address": "info@recruit.hikkoshi-sakai.co.jp",
+      "send_time": "2025-06-23T15:30:17.313139",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 142,
+      "company_name": "株式会社大阪ガスファシリティーズ",
+      "email_address": "info@ogfa.co.jp",
+      "send_time": "2025-06-23T15:30:22.441977",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 143,
+      "company_name": "パナソニックエイジフリー株式会社",
+      "email_address": "info@panasonic.co.jp",
+      "send_time": "2025-06-23T15:30:27.604310",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 144,
+      "company_name": "株式会社富士コーポレーション",
+      "email_address": "info@fujicorp.org",
+      "send_time": "2025-06-23T15:30:32.727782",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 145,
+      "company_name": "株式会社ランドウィック",
+      "email_address": "info@randwick.co.jp",
+      "send_time": "2025-06-23T15:30:37.847954",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 146,
+      "company_name": "日本電気機器株式会社",
+      "email_address": "info@nichidengroup.com",
+      "send_time": "2025-06-23T15:30:42.978528",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 147,
+      "company_name": "八文字会計事務所",
+      "email_address": "info@hachimonji.gr.jp",
+      "send_time": "2025-06-23T15:30:48.106683",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 148,
+      "company_name": "株式会社ひごペットフレンドリー",
+      "email_address": "info@higopet.com",
+      "send_time": "2025-06-23T15:30:53.287274",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 149,
+      "company_name": "株式会社トータリアシンコー",
+      "email_address": "info@t-shinko.co.jp",
+      "send_time": "2025-06-23T15:30:58.418703",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 150,
+      "company_name": "紅忠コイルセンター関西株式会社",
+      "email_address": "info@benichu-kansai.co.jp",
+      "send_time": "2025-06-23T15:31:03.544899",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23380
+    },
+    {
+      "company_id": 28,
+      "company_name": "吉本興業ホールディングス株式会社",
+      "email_address": "info@yoshimoto.co.jp",
+      "send_time": "2025-06-23T15:39:42.383988",
+      "script_name": "huganjob_duplicate_prevention.py",
+      "pid": 23224
+    }
+  ]
+}

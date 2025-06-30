@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ company.name }} | 企業詳細 | メールマーケティングシステム</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .email-preview iframe {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .email-source pre {
+            max-height: 500px;
+            overflow: auto;
+            font-size: 12px;
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        /* 開封状況表示用のスタイル */
+        .open-status-opened {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .open-status-unopened {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .open-status-unknown {
+            color: #6c757d;
+            font-weight: bold;
+        }
+
+        .device-icon {
+            width: 20px;
+            text-align: center;
+        }
+
+        .open-details-card {
+            border-left: 4px solid #28a745;
+        }
+
+        .followup-recommendation {
+            border-left: 4px solid #ffc107;
+        }
+
+        .open-history-table {
+            font-size: 0.9rem;
+        }
+
+        .open-history-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .badge-device {
+            font-size: 0.8rem;
+            padding: 0.25em 0.5em;
+        }
+
+        .multiple-opens-alert {
+            background-color: #e7f3ff;
+            border-color: #b3d7ff;
+            color: #004085;
+        }
+
+        .followup-actions {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 0.375rem;
+            padding: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">メールマーケティングシステム</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">ダッシュボード</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/control">制御パネル</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/companies">企業一覧</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/work_logs">作業記録</a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">ダッシュボード</a></li>
+                        <li class="breadcrumb-item"><a href="/companies">企業一覧</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ company.name }}</li>
+                    </ol>
+                </nav>
+
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">企業詳細</h5>
+                        <div>
+                            <button class="btn btn-sm btn-outline-secondary" id="refreshBtn">更新</button>
+                            <a href="/companies" class="btn btn-sm btn-outline-primary ms-2">企業一覧に戻る</a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>基本情報</h6>
+                                <table class="table table-sm">
+                                    <tbody>
+                                        <tr>
+                                            <th style="width: 150px;">企業ID</th>
+                                            <td>{{ company.id }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>企業名</th>
+                                            <td>{{ company.name }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>ウェブサイト</th>
+                                            <td>
+                                                {% if company.website %}
+                                                    <a href="{{ company.website }}" target="_blank">{{ company.website }}</a>
+                                                {% else %}
+                                                    <span class="text-muted">未登録</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>業種</th>
+                                            <td>{{ company.industry|default('未登録', true) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>所在地</th>
+                                            <td>{{ company.location|default('未登録', true) }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>処理状況</h6>
+                                <table class="table table-sm">
+                                    <tbody>
+                                        <tr>
+                                            <th style="width: 150px;">メールアドレス</th>
+                                            <td>
+                                                {% if company.email %}
+                                                    {{ company.email }}
+                                                    <span class="badge bg-success ms-2">抽出成功</span>
+                                                    {% if company.email_confidence is defined and company.email_confidence is not none %}
+                                                        <div class="mt-1">
+                                                            <small class="text-muted">信頼度:
+                                                                {% if company.email_confidence >= 0.8 %}
+                                                                    <span class="badge bg-success">{{ ((company.email_confidence|default(0)|float) * 100)|round(1) }}%</span>
+                                                                {% elif company.email_confidence >= 0.5 %}
+                                                                    <span class="badge bg-warning text-dark">{{ ((company.email_confidence|default(0)|float) * 100)|round(1) }}%</span>
+                                                                {% else %}
+                                                                    <span class="badge bg-danger">{{ ((company.email_confidence|default(0)|float) * 100)|round(1) }}%</span>
+                                                                {% endif %}
+                                                            </small>
+                                                        </div>
+                                                        <div class="mt-1">
+                                                            <small class="text-muted">SMTP検証:
+                                                                {% if company.smtp_verified %}
+                                                                    <span class="badge bg-success">成功</span>
+                                                                {% else %}
+                                                                    <span class="badge bg-danger">失敗</span>
+                                                                {% endif %}
+                                                            </small>
+                                                        </div>
+                                                        {% if company.extraction_method %}
+                                                            <div class="mt-1">
+                                                                <small class="text-muted">抽出方法: {{ company.extraction_method }}</small>
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if company.extraction_source %}
+                                                            <div class="mt-1">
+                                                                <small class="text-muted">抽出元: {{ company.extraction_source }}</small>
+                                                            </div>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% else %}
+                                                    <span class="text-muted">未抽出</span>
+                                                    <span class="badge bg-danger ms-2">抽出失敗</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>ウェブサイト分析</th>
+                                            <td>
+                                                {% if company.rank %}
+                                                    <span class="badge bg-{{ 'success' if company.rank == 'A' else 'primary' if company.rank == 'B' else 'danger' }}">
+                                                        {{ company.rank }}ランク
+                                                    </span>
+                                                    <span class="ms-2">スコア: {{ company.score|default('未評価', true) }}</span>
+                                                {% else %}
+                                                    <span class="text-muted">未分析</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>メール送信</th>
+                                            <td>
+                                                {% if company.email_sent %}
+                                                    <span class="badge bg-success">送信済み</span>
+                                                    <span class="ms-2">{{ company.sent_date|default('日時不明', true) }}</span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary">未送信</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>バウンス状態</th>
+                                            <td>
+                                                {% if company.email_sent %}
+                                                    {% if company.bounced %}
+                                                        <span class="badge bg-danger">バウンス</span>
+                                                        <span class="ms-2">理由: {{ company.bounce_reason|default('不明', true) }}</span>
+                                                    {% else %}
+                                                        <span class="badge bg-success">配信成功</span>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <span class="text-muted">-</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>配信停止状況</th>
+                                            <td>
+                                                {% if company.unsubscribed %}
+                                                    <span class="badge bg-warning text-dark">配信停止</span>
+                                                    <span class="ms-2">理由: {{ company.unsubscribe_reason|default('不明', true) }}</span>
+                                                {% else %}
+                                                    <span class="badge bg-success">配信可能</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>デバッグ情報</th>
+                                            <td>
+                                                <small class="text-muted">
+                                                    email: "{{ company.email|default('None', true) }}",
+                                                    email_extracted: {{ company.email_extracted|default('False', true) }},
+                                                    email_confidence: {{ company.email_confidence|default('None', true) }},
+                                                    extraction_method: "{{ company.extraction_method|default('None', true) }}",
+                                                    email_sent: {{ company.email_sent }},
+                                                    bounced: {{ company.bounced }},
+                                                    final_status: {{ company.final_status|default('未設定', true) }}
+                                                </small>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if company.email %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title">メールアドレス抽出詳細</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>抽出情報</h6>
+                                <table class="table table-sm">
+                                    <tbody>
+                                        <tr>
+                                            <th style="width: 150px;">抽出メールアドレス</th>
+                                            <td>{{ company.email }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>信頼度</th>
+                                            <td>
+                                                {% if company.email_confidence and company.email_confidence is not none %}
+                                                    <div class="progress" style="height: 20px;">
+                                                        <div class="progress-bar
+                                                            {% if company.email_confidence >= 0.8 %}bg-success
+                                                            {% elif company.email_confidence >= 0.5 %}bg-warning
+                                                            {% else %}bg-danger{% endif %}"
+                                                            role="progressbar"
+                                                            style="width: {{ ((company.email_confidence|default(0)|float) * 100)|round(1) }}%">
+                                                            {{ ((company.email_confidence|default(0)|float) * 100)|round(1) }}%
+                                                        </div>
+                                                    </div>
+                                                {% else %}
+                                                    <span class="text-muted">不明</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>SMTP検証</th>
+                                            <td>
+                                                {% if company.smtp_verified %}
+                                                    <span class="badge bg-success">検証成功</span>
+                                                    <small class="text-muted ms-2">メールサーバーが応答しました</small>
+                                                {% else %}
+                                                    <span class="badge bg-danger">検証失敗</span>
+                                                    <small class="text-muted ms-2">メールサーバーが応答しませんでした</small>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% if company.extraction_method %}
+                                        <tr>
+                                            <th>抽出方法</th>
+                                            <td>{{ company.extraction_method }}</td>
+                                        </tr>
+                                        {% endif %}
+                                        {% if company.extraction_source %}
+                                        <tr>
+                                            <th>抽出元ページ</th>
+                                            <td>{{ company.extraction_source }}</td>
+                                        </tr>
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>抽出品質評価</h6>
+                                <div class="card">
+                                    <div class="card-body">
+                                        {% if company.email_confidence and company.email_confidence is not none %}
+                                            {% if company.email_confidence >= 0.8 %}
+                                                <div class="alert alert-success">
+                                                    <i class="bi bi-check-circle"></i>
+                                                    <strong>高品質</strong><br>
+                                                    このメールアドレスは高い信頼度で抽出されました。
+                                                </div>
+                                            {% elif company.email_confidence >= 0.5 %}
+                                                <div class="alert alert-warning">
+                                                    <i class="bi bi-exclamation-triangle"></i>
+                                                    <strong>中品質</strong><br>
+                                                    このメールアドレスは中程度の信頼度で抽出されました。
+                                                </div>
+                                            {% else %}
+                                                <div class="alert alert-danger">
+                                                    <i class="bi bi-x-circle"></i>
+                                                    <strong>低品質</strong><br>
+                                                    このメールアドレスは低い信頼度で抽出されました。
+                                                </div>
+                                            {% endif %}
+                                        {% else %}
+                                            <div class="alert alert-secondary">
+                                                <i class="bi bi-question-circle"></i>
+                                                <strong>信頼度不明</strong><br>
+                                                このメールアドレスの信頼度情報がありません。
+                                            </div>
+                                        {% endif %}
+
+                                        {% if company.smtp_verified %}
+                                            <p class="mb-0"><i class="bi bi-shield-check text-success"></i> SMTP検証により、このメールアドレスは有効であることが確認されています。</p>
+                                        {% else %}
+                                            <p class="mb-0"><i class="bi bi-shield-x text-danger"></i> SMTP検証に失敗しました。メールアドレスが無効である可能性があります。</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if company.rank %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title">ウェブサイト分析詳細</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <canvas id="websiteScoreChart" height="250"></canvas>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>カテゴリ別スコア</h6>
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>評価項目</th>
+                                            <th>スコア</th>
+                                            <th>配点</th>
+                                            <th>説明</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="table-info">
+                                            <td><strong>ユーザー体験（UX）</strong></td>
+                                            <td><strong>{{ (company.ux_score|default(0)|float)|round(1) }}点</strong></td>
+                                            <td>30点満点</td>
+                                            <td>操作性・使いやすさ・アクセシビリティ</td>
+                                        </tr>
+                                        <tr class="table-warning">
+                                            <td><strong>デザイン品質</strong></td>
+                                            <td><strong>{{ (company.design_score|default(0)|float)|round(1) }}点</strong></td>
+                                            <td>40点満点</td>
+                                            <td>視覚的な美しさ・ブランド一貫性・レイアウト</td>
+                                        </tr>
+                                        <tr class="table-secondary">
+                                            <td><strong>技術品質</strong></td>
+                                            <td><strong>{{ (company.tech_score|default(0)|float)|round(1) }}点</strong></td>
+                                            <td>30点満点</td>
+                                            <td>SEO対策・パフォーマンス・セキュリティ</td>
+                                        </tr>
+                                        <tr class="table-success">
+                                            <td><strong>総合スコア</strong></td>
+                                            <td><strong>{{ (company.score|default(0)|float)|round(1) }}点</strong></td>
+                                            <td>100点満点</td>
+                                            <td><strong>全体的な評価</strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                {% if company.analysis_comment %}
+                                <h6 class="mt-4">評価コメント</h6>
+                                <div class="card">
+                                    <div class="card-body">
+                                        {{ company.analysis_comment }}
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                {% if company.strengths %}
+                                <h6 class="mt-4">強み</h6>
+                                <div class="card border-success">
+                                    <div class="card-body">
+                                        {{ company.strengths }}
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                {% if company.weaknesses %}
+                                <h6 class="mt-4">弱み</h6>
+                                <div class="card border-warning">
+                                    <div class="card-body">
+                                        {{ company.weaknesses }}
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                {% if company.improvements %}
+                                <h6 class="mt-4">改善提案</h6>
+                                <div class="card border-info">
+                                    <div class="card-body">
+                                        {{ company.improvements }}
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                {% if company.analysis_date %}
+                                <div class="mt-4">
+                                    <small class="text-muted">分析日時: {{ company.analysis_date }}</small>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if company.email_sent %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title">メール送信詳細</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>送信情報</h6>
+                                <table class="table table-sm">
+                                    <tbody>
+                                        <tr>
+                                            <th style="width: 150px;">送信日時</th>
+                                            <td>{{ company.sent_date|default('日時不明', true) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>送信先</th>
+                                            <td>{{ company.email }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>件名</th>
+                                            <td>{{ company.email_subject|default('不明', true) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>送信結果</th>
+                                            <td>
+                                                {% if company.bounced %}
+                                                    <span class="badge bg-danger">バウンス</span>
+                                                    <span class="ms-2">理由: {{ company.bounce_reason|default('不明', true) }}</span>
+                                                {% else %}
+                                                    <span class="badge bg-success">配信成功</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>開封状況</th>
+                                            <td>
+                                                {% if open_status.has_tracking %}
+                                                    {% if open_status.is_opened %}
+                                                        <span class="badge bg-success">
+                                                            <i class="fas fa-envelope-open"></i> 開封済み
+                                                        </span>
+                                                        <div class="mt-2">
+                                                            <small class="text-muted">
+                                                                初回開封: {{ open_status.first_opened_at }}<br>
+                                                                {% if open_status.open_count > 1 %}
+                                                                最新開封: {{ open_status.latest_opened_at }}<br>
+                                                                {% endif %}
+                                                                開封回数: {{ open_status.open_count }}回<br>
+                                                                主要デバイス: {{ open_status.primary_device }}
+                                                                {% if open_status.days_since_sent is not none %}
+                                                                <br>送信から{{ open_status.days_since_sent }}日後に開封
+                                                                {% endif %}
+                                                            </small>
+                                                        </div>
+                                                    {% else %}
+                                                        <span class="badge bg-danger">
+                                                            <i class="fas fa-envelope"></i> 未開封
+                                                        </span>
+                                                        <div class="mt-2">
+                                                            <small class="text-muted">
+                                                                {% if open_status.days_since_sent is not none %}
+                                                                送信から{{ open_status.days_since_sent }}日経過
+                                                                {% endif %}
+                                                            </small>
+                                                        </div>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <span class="badge bg-secondary">
+                                                        <i class="fas fa-question"></i> 追跡不可
+                                                    </span>
+                                                    <div class="mt-2">
+                                                        <small class="text-muted">{{ open_status.message }}</small>
+                                                    </div>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>メール内容</h6>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <p><strong>件名:</strong> {{ company.email_subject|default('不明', true) }}</p>
+                                        <p><strong>送信者:</strong> 山下直輝 &lt;marketing@fortyfive.co.jp&gt;</p>
+                                        <hr>
+                                        <div class="d-flex justify-content-between mb-3">
+                                            <button class="btn btn-sm btn-outline-primary" id="showPreviewBtn">プレビュー表示</button>
+                                            <button class="btn btn-sm btn-outline-secondary" id="showSourceBtn">ソース表示</button>
+                                        </div>
+                                        <div id="emailPreview" class="email-preview">
+                                            <iframe id="emailIframe" style="width: 100%; height: 500px; border: 1px solid #ddd; border-radius: 4px;"></iframe>
+                                        </div>
+                                        <div id="emailSource" class="email-source" style="display: none;">
+                                            <pre style="max-height: 500px; overflow: auto; font-size: 12px; background-color: #f8f9fa; padding: 10px; border-radius: 4px;"><code>{{ company.email_content|default('メール内容は表示できません', true) }}</code></pre>
+                                        </div>
+                                        <!-- デバッグ情報 -->
+                                        <div class="mt-3 p-2 bg-light rounded">
+                                            <small class="text-muted">デバッグ情報: メール内容の長さ {{ company.email_content|default('')|string|length }} 文字</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 開封詳細情報 -->
+                        {% if open_status.has_tracking and open_status.is_opened %}
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <h6>開封詳細情報</h6>
+                                <div class="card open-details-card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h6 class="text-primary">開封統計</h6>
+                                                <table class="table table-sm">
+                                                    <tbody>
+                                                        <tr>
+                                                            <th style="width: 150px;">総開封回数</th>
+                                                            <td>{{ open_status.open_count }}回</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>初回開封日時</th>
+                                                            <td>{{ open_status.first_opened_at }}</td>
+                                                        </tr>
+                                                        {% if open_status.open_count > 1 %}
+                                                        <tr>
+                                                            <th>最新開封日時</th>
+                                                            <td>{{ open_status.latest_opened_at }}</td>
+                                                        </tr>
+                                                        {% endif %}
+                                                        <tr>
+                                                            <th>主要デバイス</th>
+                                                            <td>
+                                                                <span class="badge bg-info">{{ open_status.primary_device }}</span>
+                                                            </td>
+                                                        </tr>
+                                                        {% if open_status.days_since_sent is not none %}
+                                                        <tr>
+                                                            <th>開封までの日数</th>
+                                                            <td>{{ open_status.days_since_sent }}日</td>
+                                                        </tr>
+                                                        {% endif %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h6 class="text-primary">デバイス別開封状況</h6>
+                                                <div class="mb-3">
+                                                    {% for device, count in open_status.device_counts.items() %}
+                                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                                        <span>
+                                                            {% if device == 'Desktop' %}
+                                                                <i class="fas fa-desktop text-primary"></i> デスクトップ
+                                                            {% elif device == 'Mobile' %}
+                                                                <i class="fas fa-mobile-alt text-success"></i> モバイル
+                                                            {% elif device == 'Tablet' %}
+                                                                <i class="fas fa-tablet-alt text-info"></i> タブレット
+                                                            {% else %}
+                                                                <i class="fas fa-question text-muted"></i> {{ device }}
+                                                            {% endif %}
+                                                        </span>
+                                                        <span class="badge bg-secondary">{{ count }}回</span>
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+
+                                                {% if open_status.open_count > 1 %}
+                                                <div class="alert alert-info">
+                                                    <i class="fas fa-info-circle"></i>
+                                                    <strong>複数回開封</strong><br>
+                                                    このメールは{{ open_status.open_count }}回開封されています。関心度が高い可能性があります。
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                        <!-- 開封履歴詳細 -->
+                                        {% if open_status.open_records|length > 1 %}
+                                        <div class="mt-4">
+                                            <h6 class="text-primary">開封履歴</h6>
+                                            <div class="table-responsive">
+                                                <table class="table table-sm table-striped open-history-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>開封日時</th>
+                                                            <th>デバイス</th>
+                                                            <th>IPアドレス</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for record in open_status.open_records %}
+                                                        <tr>
+                                                            <td>{{ record.opened_at }}</td>
+                                                            <td>
+                                                                {% if record.device_type == 'Desktop' %}
+                                                                    <i class="fas fa-desktop text-primary"></i> {{ record.device_type }}
+                                                                {% elif record.device_type == 'Mobile' %}
+                                                                    <i class="fas fa-mobile-alt text-success"></i> {{ record.device_type }}
+                                                                {% elif record.device_type == 'Tablet' %}
+                                                                    <i class="fas fa-tablet-alt text-info"></i> {{ record.device_type }}
+                                                                {% else %}
+                                                                    <i class="fas fa-question text-muted"></i> {{ record.device_type }}
+                                                                {% endif %}
+                                                            </td>
+                                                            <td><small class="text-muted">{{ record.ip_address }}</small></td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- 未開封の場合のフォローアップ推奨 -->
+                        {% if open_status.has_tracking and not open_status.is_opened and open_status.days_since_sent and open_status.days_since_sent >= 7 %}
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="alert alert-warning followup-recommendation">
+                                    <h6><i class="fas fa-exclamation-triangle"></i> フォローアップ推奨</h6>
+                                    <p class="mb-2">
+                                        このメールは送信から<strong>{{ open_status.days_since_sent }}日</strong>経過していますが、まだ開封されていません。
+                                    </p>
+                                    <div class="mt-3">
+                                        <h6 class="text-warning">推奨アクション:</h6>
+                                        <ul class="mb-2">
+                                            <li>件名を変更したリマインダーメールの送信</li>
+                                            <li>異なるアプローチでの再アプローチ</li>
+                                            <li>電話での直接コンタクト</li>
+                                            {% if company.rank == 'A' %}
+                                            <li>高ランク企業のため、個別カスタマイズメールの検討</li>
+                                            {% endif %}
+                                        </ul>
+                                        <small class="text-muted">
+                                            <i class="fas fa-lightbulb"></i>
+                                            一般的に、7日以上未開封のメールは再アプローチが効果的です。
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% elif company.rank %}
+                <!-- ウェブサイト分析が完了しているが、メール未送信の企業向けのHTMLメールプレビュー -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title">HTMLメールプレビュー</h5>
+                        <ul class="nav nav-tabs card-header-tabs mt-2">
+                            <li class="nav-item">
+                                <button class="nav-link active" id="showPreviewBtn">プレビュー</button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" id="showSourceBtn">ソース</button>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> このメールはまだ送信されていません。送信前のプレビューです。
+                        </div>
+                        <div class="mb-3">
+                            <p><strong>件名:</strong> {{ company.email_subject|default('件名が設定されていません', true) }}</p>
+                            <p><strong>送信先:</strong> {{ company.email }}</p>
+                            <p><strong>送信者:</strong> 山下直輝 &lt;marketing@fortyfive.co.jp&gt;</p>
+                        </div>
+                        <div id="emailPreview" class="email-preview">
+                            <iframe id="emailIframe" style="width: 100%; height: 500px; border: 1px solid #ddd; border-radius: 4px;"></iframe>
+                        </div>
+                        <div id="emailSource" class="email-source" style="display: none;">
+                            <pre style="max-height: 500px; overflow: auto; font-size: 12px; background-color: #f8f9fa; padding: 10px; border-radius: 4px;"><code>{{ company.email_content|default('メール内容は表示できません', true) }}</code></pre>
+                        </div>
+                        <!-- デバッグ情報 -->
+                        <div class="mt-3 p-2 bg-light rounded">
+                            <small class="text-muted">デバッグ情報: メール内容の長さ {{ company.email_content|default('')|string|length }} 文字</small>
+                            <br>
+                            <small class="text-muted">メール内容の先頭100文字: {{ company.email_content[:100]|default('') }}</small>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title">処理履歴</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>日時</th>
+                                        <th>処理内容</th>
+                                        <th>結果</th>
+                                        <th>詳細</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if company.history %}
+                                        {% for entry in company.history %}
+                                        <tr>
+                                            <td>{{ entry.timestamp }}</td>
+                                            <td>{{ entry.action }}</td>
+                                            <td>
+                                                {% if entry.success %}
+                                                    <span class="badge bg-success">成功</span>
+                                                {% else %}
+                                                    <span class="badge bg-danger">失敗</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ entry.details }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    {% else %}
+                                        <tr>
+                                            <td colspan="4" class="text-center">処理履歴はありません</td>
+                                        </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // 更新ボタン
+        document.getElementById('refreshBtn').addEventListener('click', function() {
+            // キャッシュを無効化するためのパラメータを追加
+            window.location.href = window.location.pathname + '?refresh=true';
+        });
+
+        // ウェブサイト分析スコアチャート
+        {% if company.rank %}
+        document.addEventListener('DOMContentLoaded', function() {
+            const websiteScoreCtx = document.getElementById('websiteScoreChart').getContext('2d');
+            new Chart(websiteScoreCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['ユーザー体験', 'デザイン品質', '技術品質'],
+                    datasets: [{
+                        label: 'スコア',
+                        data: [
+                            {{ company.ux_score|default(0)|float }},
+                            {{ company.design_score|default(0)|float }},
+                            {{ company.tech_score|default(0)|float }}
+                        ],
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 40,  // デザイン品質の最大値に合わせる
+                            ticks: {
+                                stepSize: 10
+                            }
+                        }
+                    }
+                }
+            });
+        });
+        {% endif %}
+
+        // メールプレビュー機能
+        document.addEventListener('DOMContentLoaded', function() {
+            // メール内容を取得（HTMLエスケープを解除）
+            let emailContentEscaped = `{{ company.email_content|default('', true)|safe|replace("'", "\\'")|replace('"', '\\"')|replace('\n', '') }}`;
+
+            // デバッグ用にコンソールに出力
+            console.log("メール内容のエスケープ前の長さ:", emailContentEscaped.length);
+
+            // HTMLエンティティをデコード
+            const decodeEntities = function(encodedString) {
+                const textarea = document.createElement('textarea');
+                textarea.innerHTML = encodedString;
+                return textarea.value;
+            };
+
+            // デコード処理
+            const emailContent = decodeEntities(emailContentEscaped);
+            console.log("メール内容のデコード後の長さ:", emailContent.length);
+
+            const emailIframe = document.getElementById('emailIframe');
+            const showPreviewBtn = document.getElementById('showPreviewBtn');
+            const showSourceBtn = document.getElementById('showSourceBtn');
+            const emailPreview = document.getElementById('emailPreview');
+            const emailSource = document.getElementById('emailSource');
+            const debugInfo = document.querySelector('.mt-3.p-2.bg-light.rounded small');
+
+            console.log("メール内容の長さ:", emailContent.length);
+            if (debugInfo) {
+                debugInfo.textContent = `デバッグ情報: メール内容の長さ ${emailContent.length} 文字`;
+            }
+
+            // ソースコードを表示
+            const sourceCode = document.querySelector('#emailSource code');
+            if (sourceCode) {
+                sourceCode.textContent = emailContent || "メール内容はありません";
+            }
+
+            // デバッグ情報を表示
+            if (debugInfo) {
+                debugInfo.innerHTML = `デバッグ情報: メール内容の長さ ${emailContent ? emailContent.length : 0} 文字<br>
+                                      <small>メールテンプレートの状態: ${emailContent ? '読み込み済み' : '未読み込み'}</small>`;
+            }
+
+            // iframeにメール内容を表示
+            function loadEmailContent() {
+                if (emailIframe && emailIframe.contentWindow) {
+                    try {
+                        emailIframe.contentWindow.document.open();
+                        if (emailContent && emailContent.length > 0) {
+                            // HTMLコンテンツの先頭100文字をコンソールに出力（デバッグ用）
+                            console.log("HTMLコンテンツの先頭100文字:", emailContent.substring(0, 100));
+
+                            // HTMLコンテンツが<!DOCTYPE html>または<htmlで始まるかチェック
+                            if (emailContent.trim().startsWith('<!DOCTYPE html>') || emailContent.trim().startsWith('<html')) {
+                                console.log("完全なHTMLドキュメントを検出しました");
+                                emailIframe.contentWindow.document.write(emailContent);
+                            } else {
+                                console.log("HTMLフラグメントを検出しました - ラッピングします");
+                                // HTMLフラグメントの場合は、適切なHTMLドキュメントでラップする
+                                emailIframe.contentWindow.document.write(`
+                                    <!DOCTYPE html>
+                                    <html>
+                                    <head>
+                                        <meta charset="UTF-8">
+                                        <style>
+                                            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; }
+                                            h1, h2, h3 { color: #0056b3; }
+                                            .header { margin-bottom: 20px; }
+                                            .footer { margin-top: 30px; border-top: 1px solid #ddd; padding-top: 20px; font-size: 12px; color: #777; }
+                                            .highlight { background-color: #f8f9fa; padding: 15px; border-left: 4px solid #0056b3; margin: 20px 0; }
+                                            a { color: #0056b3; }
+                                        </style>
+                                    </head>
+                                    <body>
+                                        <div class="content">
+                                            ${emailContent}
+                                        </div>
+                                    </body>
+                                    </html>
+                                `);
+                            }
+                        } else {
+                            console.log("メール内容が空です");
+                            emailIframe.contentWindow.document.write(`
+                                <!DOCTYPE html>
+                                <html>
+                                <head>
+                                    <meta charset="UTF-8">
+                                    <style>
+                                        body { font-family: Arial, sans-serif; padding: 20px; color: #0c5460; background-color: #d1ecf1; border: 1px solid #bee5eb; border-radius: 4px; }
+                                    </style>
+                                </head>
+                                <body>
+                                    <h3>メール内容がありません</h3>
+                                    <p>このメールのHTMLコンテンツはまだ生成されていないか、読み込めませんでした。</p>
+                                </body>
+                                </html>
+                            `);
+                        }
+                        emailIframe.contentWindow.document.close();
+                        console.log("メール内容をiframeに読み込みました");
+                    } catch (error) {
+                        console.error("メール内容の読み込み中にエラーが発生しました:", error);
+                        // エラーが発生した場合はエラーメッセージを表示
+                        emailIframe.contentWindow.document.open();
+                        emailIframe.contentWindow.document.write(`
+                            <!DOCTYPE html>
+                            <html>
+                            <head>
+                                <meta charset="UTF-8">
+                                <style>
+                                    body { font-family: Arial, sans-serif; padding: 20px; color: #721c24; background-color: #f8d7da; }
+                                    .error { padding: 15px; border: 1px solid #f5c6cb; border-radius: 4px; }
+                                </style>
+                            </head>
+                            <body>
+                                <div class="error">
+                                    <h3>メール内容の表示中にエラーが発生しました</h3>
+                                    <p>エラー詳細: ${error.message}</p>
+                                    <p>ソース表示タブでHTMLソースを確認してください。</p>
+                                </div>
+                            </body>
+                            </html>
+                        `);
+                        emailIframe.contentWindow.document.close();
+                    }
+                }
+            }
+
+            // 初期表示
+            if (emailIframe) {
+                // 少し遅延させて読み込む（DOMの準備が完了するのを待つ）
+                setTimeout(loadEmailContent, 300);
+            }
+
+            // プレビュー表示ボタン
+            if (showPreviewBtn) {
+                showPreviewBtn.addEventListener('click', function() {
+                    emailPreview.style.display = 'block';
+                    emailSource.style.display = 'none';
+                    showPreviewBtn.classList.add('active');
+                    showSourceBtn.classList.remove('active');
+                    // プレビュー表示時に再読み込み
+                    loadEmailContent();
+                });
+            }
+
+            // ソース表示ボタン
+            if (showSourceBtn) {
+                showSourceBtn.addEventListener('click', function() {
+                    emailPreview.style.display = 'none';
+                    emailSource.style.display = 'block';
+                    showPreviewBtn.classList.remove('active');
+                    showSourceBtn.classList.add('active');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

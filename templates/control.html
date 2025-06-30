@@ -1,0 +1,1026 @@
+<!--
+このファイルは制御パネル機能がトップページに統合されたため、使用されていません。
+バックアップとして保持されています。
+制御パネル機能は現在 templates/index.html に統合されています。
+-->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>制御パネル（廃止済み） | HUGANJOB営業メール送信システム</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">HUGANJOB営業メール送信システム</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">ダッシュボード</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/control">制御パネル</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/companies">企業一覧</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/daily_stats">日別統計</a>
+                    </li>
+
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">ダッシュボード</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">制御パネル</li>
+                    </ol>
+                </nav>
+
+
+
+                <div class="row">
+                    <!-- HUGANJOB営業メール送信概要カード -->
+                    <div class="col-12 mb-4">
+                        <div class="card border-success">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-envelope me-2"></i>HUGANJOB採用営業メール送信システム
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card h-100 border-info">
+                                            <div class="card-body">
+                                                <h6 class="card-title text-info">
+                                                    <i class="fas fa-search me-1"></i>メールアドレス決定
+                                                </h6>
+                                                <p class="card-text">CSVデータとウェブスクレイピングでメールアドレスを決定</p>
+                                                <div class="small text-muted">
+                                                    <div><strong>対象:</strong> 1,885社</div>
+                                                    <div><strong>成功率:</strong> 18.6%</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card h-100 border-warning">
+                                            <div class="card-body">
+                                                <h6 class="card-title text-warning">
+                                                    <i class="fas fa-edit me-1"></i>メール内容準備
+                                                </h6>
+                                                <p class="card-text">企業名・募集職種を動的挿入したHTMLメール</p>
+                                                <div class="small text-muted">
+                                                    <div><strong>テンプレート:</strong> corporate-email-newsletter.html</div>
+                                                    <div><strong>送信者:</strong> 竹下隼平【株式会社HUGAN】</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card h-100 border-success">
+                                            <div class="card-body">
+                                                <h6 class="card-title text-success">
+                                                    <i class="fas fa-paper-plane me-1"></i>一括メール送信
+                                                </h6>
+                                                <p class="card-text">HUGANJOB採用営業メールを安全に一括送信</p>
+                                                <div class="small text-muted">
+                                                    <div><strong>送信間隔:</strong> 5秒</div>
+                                                    <div><strong>SMTP:</strong> smtp.huganjob.jp:587</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-header bg-danger text-white">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-paper-plane me-2"></i>HUGANJOB本番メール送信制御
+                                </h5>
+                                <small>重複送信防止・バウンス除外機能付き</small>
+                            </div>
+                            <div class="card-body">
+                                <form id="startProcessForm">
+                                    <div class="mb-3">
+                                        <label for="commandSelect" class="form-label">実行するHUGANJOBプロセス</label>
+                                        <select class="form-select" id="commandSelect" name="command">
+                                            <option value="huganjob_unified_sender.py">HUGANJOB統合メール送信（推奨）</option>
+                                            <option value="huganjob_bulk_email_sender.py">HUGANJOB一括メール送信（従来版）</option>
+                                            <option value="huganjob_email_address_resolver.py">HUGANJOBメールアドレス決定</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="startIdInput" class="form-label">開始企業ID</label>
+                                        <input type="number" class="form-control" id="startIdInput" name="start_id" placeholder="例: 1" min="1" value="1">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="endIdInput" class="form-label">終了企業ID</label>
+                                        <input type="number" class="form-control" id="endIdInput" name="end_id" placeholder="例: 100">
+                                        <small class="form-text text-muted">空白の場合は最後まで処理します</small>
+                                    </div>
+
+                                    <!-- メール形式選択 -->
+                                    <div class="mb-3">
+                                        <label for="emailFormatSelect" class="form-label">メール形式</label>
+                                        <select class="form-select" id="emailFormatSelect" name="email_format">
+                                            <option value="html_text">HTML + テキスト（推奨）</option>
+                                            <option value="html_only">HTMLのみ</option>
+                                            <option value="text_only">テキストのみ</option>
+                                        </select>
+                                        <small class="form-text text-muted">HTMLメール表示問題がある場合はテキストのみを選択</small>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="argsInput" class="form-label">その他の引数（オプション）</label>
+                                        <input type="text" class="form-control" id="argsInput" name="args" placeholder="例: --limit 10">
+                                    </div>
+
+                                    <!-- バッチ処理設定 -->
+                                    <div class="card mb-3">
+                                        <div class="card-header">
+                                            <h6 class="mb-0">バッチ処理設定</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="batchModeCheck" name="batch_mode">
+                                                <label class="form-check-label" for="batchModeCheck">
+                                                    バッチモードを有効にする
+                                                </label>
+                                                <small class="form-text text-muted d-block">100社以上の処理では自動的に有効になります</small>
+                                            </div>
+                                            <div class="mb-2">
+                                                <label for="batchSizeInput" class="form-label">バッチサイズ</label>
+                                                <select class="form-select" id="batchSizeInput" name="batch_size">
+                                                    <option value="10">10社ずつ（最も安全）</option>
+                                                    <option value="20" selected>20社ずつ（推奨）</option>
+                                                    <option value="50">50社ずつ（高速）</option>
+                                                </select>
+                                                <small class="form-text text-muted">大量データ処理時の分割サイズ</small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">プロセス開始</button>
+                                </form>
+
+                                <hr>
+
+                                <!-- メール形式選択付き送信 -->
+                                <div class="card mb-3">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">📧 メール形式選択送信</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label for="quickStartId" class="form-label">開始ID</label>
+                                                <input type="number" class="form-control" id="quickStartId" value="1" min="1">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label for="quickEndId" class="form-label">終了ID</label>
+                                                <input type="number" class="form-control" id="quickEndId" value="10" min="1">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label for="quickEmailFormat" class="form-label">メール形式</label>
+                                                <select class="form-select" id="quickEmailFormat">
+                                                    <option value="html_text">HTML + テキスト</option>
+                                                    <option value="html_only">HTMLのみ</option>
+                                                    <option value="text_only">テキストのみ</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="mt-3">
+                                            <button type="button" class="btn btn-primary" onclick="huganjobFlexibleSend()">
+                                                <i class="fas fa-paper-plane me-1"></i>📧 メール送信実行
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-grid gap-2">
+                                    <button type="button" class="btn btn-danger" onclick="huganjobProductionSend()">
+                                        <i class="fas fa-paper-plane me-1"></i>🚀 本番メール送信（ID 1-10）
+                                    </button>
+                                    <button type="button" class="btn btn-success" onclick="huganjobUnifiedSend()">
+                                        <i class="fas fa-shield-alt me-1"></i>HUGANJOB 統合送信（ID 1-10）
+                                    </button>
+                                    <button type="button" class="btn btn-warning" onclick="huganjobTextOnlySend()">
+                                        <i class="fas fa-file-text me-1"></i>📝 テキストメール送信（ID 1-10）
+                                    </button>
+                                    <button type="button" class="btn btn-primary" onclick="huganjobBulkSend()">
+                                        <i class="fas fa-rocket me-1"></i>HUGANJOB 大量送信（ID 1-50）
+                                    </button>
+                                    <button type="button" class="btn btn-warning" onclick="huganjobEmailResolution()">
+                                        <i class="fas fa-search me-1"></i>メールアドレス決定（ID 1-50）
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="huganjobStats()">
+                                        <i class="fas fa-chart-bar me-1"></i>HUGANJOB統計情報表示
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="card-title">実行中のプロセス</h5>
+                                <button id="refreshBtn" class="btn btn-sm btn-outline-primary">更新</button>
+                            </div>
+                            <div class="card-body">
+                                <div id="processesContainer">
+                                    {% if processes %}
+                                    <ul class="list-group">
+                                        {% for process in processes %}
+                                        <li class="list-group-item">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <h6>{{ process.description }}</h6>
+                                                    <small class="text-muted">開始: {{ process.start_time }}</small>
+                                                    <small class="text-muted d-block">実行時間: {{ process.duration }}</small>
+                                                    {% if process.has_error %}
+                                                    <div class="alert alert-danger mt-2 mb-0 py-1 px-2">
+                                                        <small><strong>エラー:</strong> {{ process.error_message }}</small>
+                                                        <button class="btn btn-sm btn-link p-0 ms-2 view-error-btn" data-process-id="{{ process.id }}">詳細を表示</button>
+                                                    </div>
+                                                    {% endif %}
+                                                    {% if process.status == 'suspicious' and process.warning %}
+                                                    <div class="alert alert-warning mt-2 mb-0 py-1 px-2">
+                                                        <small><strong>警告:</strong> {{ process.warning }}</small>
+                                                        <button class="btn btn-sm btn-link p-0 ms-2 view-error-btn" data-process-id="{{ process.id }}">詳細を表示</button>
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                                <div>
+                                                    <span class="badge bg-{{ 'primary' if process.status == 'running' else 'success' if process.status == 'completed' else 'warning' if process.status == 'suspicious' else 'danger' }}">
+                                                        {{ '実行中' if process.status == 'running' else '完了' if process.status == 'completed' else '要確認' if process.status == 'suspicious' else 'エラー' }}
+                                                    </span>
+                                                    {% if process.status == 'running' %}
+                                                    <button class="btn btn-sm btn-danger stop-process-btn" data-process-id="{{ process.id }}">停止</button>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% else %}
+                                    <p class="text-center">実行中のプロセスはありません</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- プロセス履歴 -->
+                        <div class="card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="card-title">プロセス実行履歴</h5>
+                                <button id="refreshHistoryBtn" class="btn btn-sm btn-outline-primary">更新</button>
+                            </div>
+                            <div class="card-body">
+                                <div id="processHistoryContainer">
+                                    <p class="text-center">履歴を読み込み中...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <!-- エラー詳細モーダル -->
+    <div class="modal fade" id="errorDetailModal" tabindex="-1" aria-labelledby="errorDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="errorDetailModalLabel">エラー詳細</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <h6>コマンド情報</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>コマンド:</strong> <span id="errorCommand"></span></p>
+                                <p><strong>引数:</strong> <span id="errorArgs"></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>開始時間:</strong> <span id="errorStartTime"></span></p>
+                                <p><strong>ステータス:</strong> <span id="errorStatus"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <h6>エラーメッセージ</h6>
+                        <div class="alert alert-danger" id="errorMessage"></div>
+                    </div>
+                    <div class="mb-3">
+                        <h6>詳細ログ</h6>
+                        <div class="card">
+                            <div class="card-body bg-dark text-light">
+                                <pre id="errorLog" style="white-space: pre-wrap; max-height: 300px; overflow-y: auto;"></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        /* HUGANJOB専用スタイル */
+        .huganjob-card {
+            transition: all 0.3s ease;
+        }
+        .huganjob-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+    <script>
+        // エラー詳細モーダル
+        const errorModal = new bootstrap.Modal(document.getElementById('errorDetailModal'));
+
+        // HUGANJOB専用システム - 営業キャンペーン選択機能は削除済み
+
+        // プロセス情報を定期的に更新
+        function updateProcesses() {
+            fetch('/api/get_processes')
+                .then(response => response.json())
+                .then(processes => {
+                    const container = document.getElementById('processesContainer');
+                    if (processes.length === 0) {
+                        container.innerHTML = '<p class="text-center">実行中のプロセスはありません</p>';
+
+                        return;
+                    }
+
+
+
+                    let html = '<ul class="list-group">';
+                    processes.forEach(process => {
+                        html += `
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6>${process.description}</h6>
+                                        <small class="text-muted">開始: ${process.start_time}</small>
+                                        <small class="text-muted d-block">実行時間: ${process.duration}</small>`;
+
+                        if (process.has_error) {
+                            html += `
+                                <div class="alert alert-danger mt-2 mb-0 py-1 px-2">
+                                    <small><strong>エラー:</strong> ${process.error_message}</small>
+                                    <button class="btn btn-sm btn-link p-0 ms-2 view-error-btn" data-process-id="${process.id}">詳細を表示</button>
+                                </div>`;
+                        }
+
+                        if (process.status === 'suspicious' && process.warning) {
+                            html += `
+                                <div class="alert alert-warning mt-2 mb-0 py-1 px-2">
+                                    <small><strong>警告:</strong> ${process.warning}</small>
+                                    <button class="btn btn-sm btn-link p-0 ms-2 view-error-btn" data-process-id="${process.id}">詳細を表示</button>
+                                </div>`;
+                        }
+
+                        html += `
+                                    </div>
+                                    <div>
+                                        <span class="badge bg-${process.status === 'running' ? 'primary' : process.status === 'completed' ? 'success' : process.status === 'suspicious' ? 'warning' : 'danger'}">
+                                            ${process.status === 'running' ? '実行中' : process.status === 'completed' ? '完了' : process.status === 'suspicious' ? '要確認' : 'エラー'}
+                                        </span>`;
+
+                        if (process.status === 'running') {
+                            html += `<button class="btn btn-sm btn-danger stop-process-btn" data-process-id="${process.id}">停止</button>`;
+                        }
+
+                        html += `
+                                    </div>
+                                </div>
+                            </li>`;
+                    });
+                    html += '</ul>';
+                    container.innerHTML = html;
+
+                    // イベントリスナーを再設定
+                    setupEventListeners();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        // イベントリスナーを設定
+        function setupEventListeners() {
+            // プロセス停止ボタン
+            document.querySelectorAll('.stop-process-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const processId = this.getAttribute('data-process-id');
+                    stopProcess(processId);
+                });
+            });
+
+            // エラー詳細表示ボタン
+            document.querySelectorAll('.view-error-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const processId = this.getAttribute('data-process-id');
+                    showErrorDetails(processId);
+                });
+            });
+        }
+
+        // エラー詳細を表示
+        function showErrorDetails(processId) {
+            fetch(`/api/process_error/${processId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success === false) {
+                        alert(data.message);
+                        return;
+                    }
+
+                    // モーダルにデータを設定
+                    document.getElementById('errorCommand').textContent = data.command;
+                    document.getElementById('errorArgs').textContent = data.args || '(なし)';
+                    document.getElementById('errorStartTime').textContent = data.start_time;
+                    document.getElementById('errorStatus').textContent = data.status === 'failed' ? 'エラー' : data.status === 'error' ? '監視エラー' : data.status;
+                    document.getElementById('errorMessage').textContent = data.error_message || '不明なエラー';
+
+                    // ログがあれば表示
+                    const logElement = document.getElementById('errorLog');
+                    if (data.error_log) {
+                        logElement.textContent = data.error_log;
+                    } else if (data.output) {
+                        logElement.textContent = data.output;
+                    } else {
+                        logElement.textContent = '詳細ログはありません';
+                    }
+
+                    // モーダルを表示
+                    errorModal.show();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('エラー詳細の取得中にエラーが発生しました');
+                });
+        }
+
+        // プロセスを停止
+        function stopProcess(processId) {
+            if (confirm('プロセスを停止しますか？')) {
+                fetch(`/api/stop_process/${processId}`, {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        updateProcesses();
+                    } else {
+                        alert('エラー: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('エラーが発生しました');
+                });
+            }
+        }
+
+        // HUGANJOB専用関数（統合システム使用）
+        function huganjobProductionSend() {
+            if (confirm('🚨 本番メール送信を実行しますか？\n\n対象: ID 1-10 (10社)\n\n✅ 重複送信防止機能有効\n✅ バウンス除外機能有効\n✅ 送信間隔制御有効\n\n⚠️ 実際の営業メールが送信されます')) {
+                fetch('/api/huganjob/production_send', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ start_id: 1, end_id: 10 })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    let message = data.success ? data.message : 'エラー: ' + data.message;
+                    if (data.success && data.safety_features) {
+                        message += '\n\n🛡️ 安全機能:\n' + data.safety_features.join('\n');
+                        message += '\n\n📧 送信者: ' + data.sender;
+                        message += '\n📡 SMTP: ' + data.smtp_server;
+                    }
+                    alert(message);
+                    if (data.success) updateProcesses();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('エラーが発生しました');
+                });
+            }
+        }
+
+        function huganjobUnifiedSend() {
+            if (confirm('HUGANJOB統合営業メール（ID 1-10）を送信しますか？\n\n重複送信防止機能が有効です。')) {
+                fetch('/api/huganjob/bulk_send', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ start_id: 1, end_id: 10, max_emails: 10 })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    let message = data.success ? data.message : 'エラー: ' + data.message;
+                    if (data.success && data.duplicate_prevention) {
+                        message += '\n\n✅ 重複送信防止機能が有効です';
+                    }
+                    alert(message);
+                    if (data.success) updateProcesses();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('エラーが発生しました');
+                });
+            }
+        }
+
+        function huganjobTextOnlySend() {
+            if (confirm('📝 テキストメール送信を実行しますか？\n\n対象: ID 1-10 (10社)\n形式: プレーンテキスト（HTMLなし）\n目的: HTMLメール表示問題対応\n\n✅ 重複送信防止機能有効\n✅ バウンス除外機能有効\n✅ 配信停止チェック有効\n✅ 送信間隔制御有効\n\n⚠️ 実際の営業メールが送信されます')) {
+                fetch('/api/huganjob/text_only_send', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ start_id: 1, end_id: 10 })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    let message = data.success ? data.message : 'エラー: ' + data.message;
+                    if (data.success) {
+                        message += '\n\n📝 メール形式: ' + data.email_type;
+                        message += '\n🎯 目的: ' + data.purpose;
+                        message += '\n🛡️ 安全機能: ' + data.safety_features.join(', ');
+                    }
+                    alert(message);
+                    if (data.success) updateProcesses();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('エラーが発生しました');
+                });
+            }
+        }
+
+        function huganjobFlexibleSend() {
+            const startId = document.getElementById('quickStartId').value;
+            const endId = document.getElementById('quickEndId').value;
+            const emailFormat = document.getElementById('quickEmailFormat').value;
+
+            let formatText = '';
+            let apiEndpoint = '';
+
+            switch(emailFormat) {
+                case 'html_text':
+                    formatText = 'HTML + テキスト';
+                    apiEndpoint = '/api/huganjob/flexible_send';
+                    break;
+                case 'html_only':
+                    formatText = 'HTMLのみ';
+                    apiEndpoint = '/api/huganjob/production_send';
+                    break;
+                case 'text_only':
+                    formatText = 'テキストのみ';
+                    apiEndpoint = '/api/huganjob/text_only_send';
+                    break;
+            }
+
+            if (confirm(`📧 メール送信を実行しますか？\n\n対象: ID ${startId}-${endId}\n形式: ${formatText}\n\n✅ 重複送信防止機能有効\n✅ バウンス除外機能有効\n✅ 配信停止チェック有効\n✅ 送信間隔制御有効\n\n⚠️ 実際の営業メールが送信されます`)) {
+                fetch(apiEndpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        start_id: parseInt(startId),
+                        end_id: parseInt(endId),
+                        email_format: emailFormat
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    let message = data.success ? data.message : 'エラー: ' + data.message;
+                    if (data.success) {
+                        if (data.email_type) message += '\n\n📝 メール形式: ' + data.email_type;
+                        if (data.purpose) message += '\n🎯 目的: ' + data.purpose;
+                        if (data.safety_features) message += '\n🛡️ 安全機能: ' + data.safety_features.join(', ');
+                        if (data.system) message += '\n⚙️ 送信システム: ' + data.system;
+                    }
+                    alert(message);
+                    if (data.success) updateProcesses();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('エラーが発生しました');
+                });
+            }
+        }
+
+        function huganjobBulkSend() {
+            if (confirm('HUGANJOB大量営業メール（ID 1-50）を送信しますか？\n\n重複送信防止機能が有効です。')) {
+                fetch('/api/huganjob/bulk_send', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ start_id: 1, end_id: 50, max_emails: 50 })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    let message = data.success ? data.message : 'エラー: ' + data.message;
+                    if (data.success && data.duplicate_prevention) {
+                        message += '\n\n✅ 重複送信防止機能が有効です';
+                    }
+                    alert(message);
+                    if (data.success) updateProcesses();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('エラーが発生しました');
+                });
+            }
+        }
+
+        function huganjobEmailResolution() {
+            if (confirm('HUGANJOBメールアドレス決定（ID 1-50）を実行しますか？')) {
+                fetch('/api/huganjob/email_resolution', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ start_id: 1, end_id: 50 })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.success ? data.message : 'エラー: ' + data.message);
+                    if (data.success) updateProcesses();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('エラーが発生しました');
+                });
+            }
+        }
+
+        function huganjobStats() {
+            fetch('/api/huganjob/stats')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const stats = data.stats;
+                        let message = 'HUGANJOB営業メール送信統計:\n\n';
+                        message += `総企業数: ${stats.total_companies}社\n`;
+                        message += `メールアドレス決定済み: ${stats.email_resolved}社\n`;
+                        message += `メール送信済み: ${stats.emails_sent}社\n`;
+                        message += `配信成功: ${stats.delivery_success}社\n`;
+                        message += `バウンス: ${stats.bounced}社\n`;
+                        message += `成功率: ${stats.success_rate}%\n`;
+                        message += `\n最終更新: ${data.last_updated}`;
+                        alert(message);
+                    } else {
+                        alert('統計情報の取得に失敗しました: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('統計情報の取得中にエラーが発生しました');
+                });
+        }
+
+        // 初期設定
+        document.addEventListener('DOMContentLoaded', function() {
+            // イベントリスナーを設定
+            setupEventListeners();
+
+            // 削除された項目: 高品質修復処理のイベントリスナー
+            // 削除された項目: 高品質処理停止ボタン
+            // 削除された項目: 高品質修復状況の初期読み込み
+
+            // プロセス履歴を読み込む
+            updateProcessHistory();
+
+            // 30秒ごとにプロセス情報を更新
+            setInterval(updateProcesses, 30000);
+
+            // 60秒ごとにプロセス履歴を更新
+            setInterval(updateProcessHistory, 60000);
+
+            // 削除された項目: 送信記録の整合性を修正するボタン
+            // 削除された項目: キャッシュをクリアして再読み込みするボタン
+
+
+
+            // 削除された項目: ファイル統合ボタン
+            // 削除された項目: ファイル統計情報ボタン
+            // 削除された項目: サーバーを再起動するボタン
+        });
+
+        // プロセス履歴を更新
+        function updateProcessHistory() {
+            fetch('/api/get_process_history?limit=5')
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.getElementById('processHistoryContainer');
+
+                    // データが配列の場合（正常なレスポンス）
+                    if (Array.isArray(data)) {
+                        const history = data;
+                        if (history.length === 0) {
+                            container.innerHTML = '<p class="text-center">プロセス履歴はありません</p>';
+                            return;
+                        }
+                        renderProcessHistory(history, container);
+                        return;
+                    }
+
+                    // エラーレスポンスの場合
+                    if (data.error) {
+                        container.innerHTML = '<div class="alert alert-danger">履歴の読み込み中にエラーが発生しました: ' + data.error + '</div>';
+                        return;
+                    }
+
+                    // 旧形式のレスポンス（success フィールドがある場合）
+                    if (data.success === false) {
+                        container.innerHTML = '<div class="alert alert-danger">履歴の読み込み中にエラーが発生しました: ' + (data.error || '不明なエラー') + '</div>';
+                        return;
+                    }
+
+                    const history = data.history || data || [];
+                    if (history.length === 0) {
+                        container.innerHTML = '<p class="text-center">プロセス履歴はありません</p>';
+                        return;
+                    }
+
+                    renderProcessHistory(history, container);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('processHistoryContainer').innerHTML =
+                        '<div class="alert alert-danger">履歴の読み込み中にエラーが発生しました: ' + error.message + '</div>';
+                });
+        }
+
+        // プロセス履歴をレンダリング
+        function renderProcessHistory(history, container) {
+            let html = '<ul class="list-group">';
+            history.forEach(process => {
+                // 開始時間と終了時間
+                const startTime = process.start_time || '不明';
+                const endTime = process.end_time || '不明';
+
+                // 実行時間の計算
+                let duration = '不明';
+                if (process.start_time && process.end_time) {
+                    const start = new Date(process.start_time);
+                    const end = new Date(process.end_time);
+                    const diff = Math.floor((end - start) / 1000);
+
+                    const hours = Math.floor(diff / 3600);
+                    const minutes = Math.floor((diff % 3600) / 60);
+                    const seconds = diff % 60;
+
+                    duration = `${hours > 0 ? hours + '時間 ' : ''}${minutes > 0 ? minutes + '分 ' : ''}${seconds}秒`;
+                }
+
+                // 説明文
+                let description = process.description || process.command;
+                if (!description && process.command) {
+                    // コマンドから説明文を生成
+                    const command = process.command;
+                    const args = process.args || [];
+
+                    if (command === 'analyze_websites_new_criteria.py' || command.includes('analyze_websites')) {
+                        description = 'ウェブサイト分析';
+                    } else if (command === 'prioritized_email_extractor.py' || command.includes('extract')) {
+                        description = 'メールアドレス抽出';
+                    } else if (command === 'send_marketing_emails_batch.py' || command.includes('send_email')) {
+                        description = 'マーケティングメール送信';
+
+                    } else {
+                        description = command;
+                    }
+                }
+
+                html += `
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6>${description}</h6>
+                                <small class="text-muted">開始: ${startTime}</small>
+                                <small class="text-muted d-block">終了: ${endTime}</small>
+                                <small class="text-muted d-block">実行時間: ${duration}</small>`;
+
+                if (process.status === 'failed' || process.status === 'error' || process.has_error) {
+                    html += `
+                        <div class="alert alert-danger mt-2 mb-0 py-1 px-2">
+                            <small><strong>エラー:</strong> ${process.error || '不明なエラー'}</small>
+                            <button class="btn btn-sm btn-link p-0 ms-2 view-history-error-btn" data-process-id="${process.id}">詳細を表示</button>
+                        </div>`;
+                }
+
+                html += `
+                            </div>
+                            <div>
+                                <span class="badge bg-${process.status === 'running' ? 'primary' : process.status === 'completed' ? 'success' : process.status === 'suspicious' ? 'warning' : 'danger'}">
+                                    ${process.status === 'running' ? '実行中' : process.status === 'completed' ? '完了' : process.status === 'suspicious' ? '要確認' : 'エラー'}
+                                </span>`;
+
+                // 実行中のプロセスには状態更新ボタンを追加
+                if (process.status === 'running') {
+                    html += `
+                                <button class="btn btn-sm btn-warning ms-2 update-process-status-btn" data-process-id="${process.id}">
+                                    完了にする
+                                </button>`;
+                }
+
+                html += `
+                            </div>
+                        </div>
+                    </li>`;
+            });
+            html += '</ul>';
+            container.innerHTML = html;
+
+            // 履歴のエラー詳細表示ボタンにイベントリスナーを設定
+            document.querySelectorAll('.view-history-error-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const processId = this.getAttribute('data-process-id');
+                    showErrorDetails(processId);
+                });
+            });
+        }
+
+        // 更新ボタン
+        document.getElementById('refreshBtn').addEventListener('click', function() {
+            updateProcesses();
+        });
+
+        // 履歴更新ボタン
+        document.getElementById('refreshHistoryBtn').addEventListener('click', function() {
+            updateProcessHistory();
+        });
+
+        // プロセス開始フォーム
+        document.getElementById('startProcessForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const command = document.getElementById('commandSelect').value;
+            const startId = document.getElementById('startIdInput').value;
+            const endId = document.getElementById('endIdInput').value;
+            const otherArgs = document.getElementById('argsInput').value;
+            const batchMode = document.getElementById('batchModeCheck').checked;
+            const batchSize = document.getElementById('batchSizeInput').value;
+
+            // 企業ID範囲の引数を構築
+            let args = otherArgs;
+            if (startId) {
+                args = (args ? args + ' ' : '') + `--start-id ${startId}`;
+            }
+            if (endId) {
+                args = (args ? args + ' ' : '') + `--end-id ${endId}`;
+            }
+
+
+
+            // バッチモードの範囲チェック
+            if (startId && endId) {
+                const rangeSize = parseInt(endId) - parseInt(startId) + 1;
+                if (rangeSize >= 100 && !batchMode) {
+                    if (confirm(`処理範囲が${rangeSize}社と大きいため、バッチモードを有効にすることを推奨します。\n\nバッチモードを有効にしますか？`)) {
+                        document.getElementById('batchModeCheck').checked = true;
+                    }
+                }
+            }
+
+            fetch('/api/start_process', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `command=${encodeURIComponent(command)}&args=${encodeURIComponent(args)}&batch_mode=${batchMode}&batch_size=${batchSize}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    let message = data.message;
+                    if (data.batch_mode) {
+                        message += `\n\nバッチモード: ${data.batch_size}社ずつ処理`;
+                        if (data.estimated_batches) {
+                            message += `\n予想バッチ数: ${data.estimated_batches}`;
+                        }
+                    }
+                    alert(message);
+                    location.reload();
+                } else {
+                    alert('エラー: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('エラーが発生しました');
+            });
+        });
+
+        // 削除された項目: 100社単位バッチ処理ボタン
+        // 削除された項目: バッチ処理ドロップダウンメニュー
+        // 削除された項目: バッチ処理実行関数
+        // 削除された項目: 進捗情報リセットボタン
+        // 削除された項目: 範囲指定で統合ワークフローを実行するボタン
+
+                // 削除された項目: 範囲指定で統合ワークフローを実行するプロセス開始コード
+                // 削除された項目: ファイル統合・アーカイブボタン
+
+        // プロセス停止ボタン
+        document.querySelectorAll('.stop-process-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const processId = this.getAttribute('data-process-id');
+                if (confirm('プロセスを停止しますか？')) {
+                    fetch(`/api/stop_process/${processId}`, {
+                        method: 'POST'
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(data.message);
+                            location.reload();
+                        } else {
+                            alert('エラー: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('エラーが発生しました');
+                    });
+                }
+            });
+        });
+
+
+
+        // プロセス状態を手動で更新
+        function updateProcessStatus(processId, status = 'completed') {
+            if (!confirm('このプロセスの状態を更新しますか？')) {
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('process_id', processId);
+            formData.append('status', status);
+
+            fetch('/api/update_process_status', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    updateProcessHistory();
+                } else {
+                    alert('エラー: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('プロセス状態の更新中にエラーが発生しました');
+            });
+        }
+
+        // イベントリスナーを設定（動的に追加されるボタンに対応）
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('update-process-status-btn')) {
+                const processId = e.target.getAttribute('data-process-id');
+                updateProcessStatus(processId);
+            }
+        });
+
+        // 削除された項目: バウンス処理ボタンのイベントリスナー
+        // 削除された項目: バウンス処理状況確認ボタンのイベントリスナー
+
+        // ページ読み込み時に初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            updateProcesses();
+            updateProcessHistory();
+            setInterval(updateProcesses, 5000);
+            setInterval(updateProcessHistory, 10000);
+        });
+    </script>
+</body>
+</html>

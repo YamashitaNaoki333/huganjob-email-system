@@ -1,0 +1,466 @@
+{% extends "base.html" %}
+
+{% block title %}日別統計 - バウンス処理システム{% endblock %}
+
+{% block extra_head %}
+<style>
+    .stats-card {
+        border-left: 4px solid #007bff;
+        transition: transform 0.2s;
+    }
+    .stats-card:hover {
+        transform: translateY(-2px);
+    }
+    .chart-container {
+        position: relative;
+        height: 400px;
+        margin-bottom: 30px;
+    }
+    .date-filter {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+    .table-responsive {
+        max-height: 500px;
+        overflow-y: auto;
+    }
+    .badge-success { background-color: #28a745; }
+    .badge-danger { background-color: #dc3545; }
+    .badge-warning { background-color: #ffc107; color: #212529; }
+    .badge-secondary { background-color: #6c757d; }
+</style>
+{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item active">日別統計</li>
+{% endblock %}
+
+{% block page_title %}日別統計{% endblock %}
+{% block page_description %}メール送信・バウンス統計の日別分析{% endblock %}
+
+{% block content %}
+
+<!-- 期間フィルタ -->
+<div class="date-filter">
+    <form method="GET" action="{{ url_for('daily_stats') }}" class="row g-3 align-items-end">
+        <div class="col-md-4">
+            <label for="start_date" class="form-label">開始日</label>
+            <input type="date" class="form-control" id="start_date" name="start_date" value="{{ start_date }}">
+        </div>
+        <div class="col-md-4">
+            <label for="end_date" class="form-label">終了日</label>
+            <input type="date" class="form-control" id="end_date" name="end_date" value="{{ end_date }}">
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-search me-1"></i>フィルタ適用
+            </button>
+            <button type="button" class="btn btn-secondary ms-2" onclick="resetDates()">
+                <i class="fas fa-undo me-1"></i>リセット
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- 合計統計カード -->
+<div class="row mb-4">
+            <div class="col-md-2">
+                <div class="card stats-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-muted">総送信数</h5>
+                        <h2 class="text-primary">{{ total_stats.total }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card stats-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-muted">成功</h5>
+                        <h2 class="text-success">{{ total_stats.success }}</h2>
+                        <small class="text-muted">{{ total_stats.success_rate }}%</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card stats-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-muted">バウンス</h5>
+                        <h2 class="text-danger">{{ total_stats.bounce }}</h2>
+                        <small class="text-muted">{{ total_stats.bounce_rate }}%</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card stats-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-muted">結果待ち</h5>
+                        <h2 class="text-warning">{{ total_stats.pending }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card stats-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-muted">成功率</h5>
+                        <h2 class="text-info">{{ total_stats.success_rate }}%</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card stats-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-muted">バウンス率</h5>
+                        <h2 class="text-danger">{{ total_stats.bounce_rate }}%</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- チャート表示 -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-chart-line me-2"></i>日別メール送信推移
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="dailyStatsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- バウンス統計セクション -->
+        {% if bounce_reason_stats or bounce_type_stats %}
+        <div class="row mb-4">
+            <!-- バウンスタイプ別統計 -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-chart-pie me-2"></i>バウンスタイプ別統計
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if bounce_type_stats %}
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <div class="card border-left-danger">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title text-muted">Permanent</h6>
+                                        <h3 class="text-danger">{{ bounce_type_stats.permanent or 0 }}</h3>
+                                        <small class="text-muted">永続的エラー</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card border-left-warning">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title text-muted">Temporary</h6>
+                                        <h3 class="text-warning">{{ bounce_type_stats.temporary or 0 }}</h3>
+                                        <small class="text-muted">一時的エラー</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card border-left-secondary">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title text-muted">Unknown</h6>
+                                        <h3 class="text-secondary">{{ bounce_type_stats.unknown or 0 }}</h3>
+                                        <small class="text-muted">不明なエラー</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <p class="text-muted">バウンスタイプ別データがありません</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- バウンス理由別統計 -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-exclamation-triangle me-2"></i>バウンス理由別統計
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if bounce_reason_stats %}
+                        <div class="table-responsive" style="max-height: 300px;">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>理由</th>
+                                        <th class="text-end">件数</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for reason, count in bounce_reason_stats.items() %}
+                                    <tr>
+                                        <td>{{ reason }}</td>
+                                        <td class="text-end">
+                                            <span class="badge badge-danger">{{ count }}</span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <p class="text-muted">バウンス理由別データがありません</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- バウンス企業詳細リスト -->
+        {% if bounce_companies %}
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-list me-2"></i>バウンス企業詳細
+                            <span class="badge badge-danger ms-2">{{ bounce_companies|length }}社</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive" style="max-height: 400px;">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>企業名</th>
+                                        <th>募集職種</th>
+                                        <th>バウンスタイプ</th>
+                                        <th>バウンス日時</th>
+                                        <th>バウンス理由</th>
+                                        <th>詳細</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for company in bounce_companies %}
+                                    <tr>
+                                        <td>
+                                            <a href="{{ url_for('company_detail', company_id=company.id) }}" class="text-decoration-none">
+                                                {{ company.id }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <strong>{{ company.company_name }}</strong>
+                                            {% if company.website %}
+                                            <br><small class="text-muted">{{ company.website }}</small>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ company.job_position }}</td>
+                                        <td>
+                                            {% if company.bounce_type == 'permanent' %}
+                                                <span class="badge badge-danger">Permanent</span>
+                                            {% elif company.bounce_type == 'temporary' %}
+                                                <span class="badge badge-warning">Temporary</span>
+                                            {% else %}
+                                                <span class="badge badge-secondary">Unknown</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if company.bounce_date %}
+                                                {{ company.bounce_date }}
+                                            {% else %}
+                                                <span class="text-muted">-</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <small>{{ company.bounce_reason or '-' }}</small>
+                                        </td>
+                                        <td>
+                                            <a href="{{ url_for('company_detail', company_id=company.id) }}"
+                                               class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye me-1"></i>詳細
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- 詳細テーブル -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-table me-2"></i>日別詳細データ
+                            <small class="text-muted ms-2">最終更新: {{ last_updated }}</small>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>日付</th>
+                                        <th>総送信数</th>
+                                        <th>成功</th>
+                                        <th>バウンス</th>
+                                        <th>結果待ち</th>
+                                        <th>成功率</th>
+                                        <th>バウンス率</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for date in sorted_dates %}
+                                    {% set stats = daily_stats[date] %}
+                                    <tr>
+                                        <td><strong>{{ date }}</strong></td>
+                                        <td>
+                                            <span class="badge badge-secondary">{{ stats.total }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-success">{{ stats.success }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-danger">{{ stats.bounce }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-warning">{{ stats.pending }}</span>
+                                        </td>
+                                        <td>
+                                            {% if stats.total > 0 %}
+                                                {{ "%.1f"|format((stats.success / stats.total) * 100) }}%
+                                            {% else %}
+                                                0.0%
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if stats.total > 0 %}
+                                                {{ "%.1f"|format((stats.bounce / stats.total) * 100) }}%
+                                            {% else %}
+                                                0.0%
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% if not sorted_dates %}
+                                    <tr>
+                                        <td colspan="7" class="text-center text-muted">
+                                            指定された期間にデータがありません
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+        // 日別統計チャート
+        const ctx = document.getElementById('dailyStatsChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ chart_data.dates | tojson }},
+                datasets: [
+                    {
+                        label: '総送信数',
+                        data: {{ chart_data.total | tojson }},
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                        borderWidth: 2,
+                        fill: false
+                    },
+                    {
+                        label: '成功',
+                        data: {{ chart_data.success | tojson }},
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                        borderWidth: 2,
+                        fill: false
+                    },
+                    {
+                        label: 'バウンス',
+                        data: {{ chart_data.bounce | tojson }},
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                        borderWidth: 2,
+                        fill: false
+                    },
+                    {
+                        label: '結果待ち',
+                        data: {{ chart_data.pending | tojson }},
+                        borderColor: 'rgba(255, 206, 86, 1)',
+                        backgroundColor: 'rgba(255, 206, 86, 0.1)',
+                        borderWidth: 2,
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '日別メール送信統計'
+                    },
+                    legend: {
+                        position: 'top'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: '件数'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: '日付'
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                }
+            }
+        });
+
+        // 日付リセット機能
+        function resetDates() {
+            const today = new Date();
+            const thirtyDaysAgo = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000));
+            
+            document.getElementById('start_date').value = thirtyDaysAgo.toISOString().split('T')[0];
+            document.getElementById('end_date').value = today.toISOString().split('T')[0];
+        }
+
+    // 自動更新機能（5分ごと）
+    setInterval(function() {
+        location.reload();
+    }, 300000); // 5分 = 300,000ミリ秒
+</script>
+{% endblock %}

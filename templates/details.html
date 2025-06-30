@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ step.display_name }} - 詳細 | メールマーケティングシステム</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">メールマーケティングシステム</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">ダッシュボード</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/control">制御パネル</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/companies">企業一覧</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/work_logs">作業記録</a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">ダッシュボード</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ step.display_name }}</li>
+                    </ol>
+                </nav>
+
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">{{ step.display_name }} - 詳細情報</h5>
+                        <small class="text-muted">最終更新: {{ last_updated }}</small>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>ステータス:
+                                    {% if step.status == 'completed' %}
+                                    <span class="badge bg-success">完了</span>
+                                    {% elif step.status == 'in_progress' %}
+                                    <span class="badge bg-primary">実行中</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">待機中</span>
+                                    {% endif %}
+                                </h6>
+
+                                {% if step.result %}
+                                <div class="mt-3">
+                                    <h6>結果:</h6>
+                                    <ul class="list-group">
+                                        {% for key, value in step.result.items() %}
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            {{ key }}
+                                            <span class="badge bg-primary rounded-pill">{{ value }}</span>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-end">
+                                    <a href="/control" class="btn btn-primary me-2">制御パネル</a>
+                                    <button type="button" class="btn btn-secondary" id="refreshBtn">更新</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">ログ情報</h5>
+                        <div>
+                            <button class="btn btn-sm btn-outline-secondary" id="refreshLogBtn">ログ更新</button>
+                            <select class="form-select form-select-sm d-inline-block w-auto ms-2" id="logLinesSelect">
+                                <option value="50">最新50行</option>
+                                <option value="100" selected>最新100行</option>
+                                <option value="200">最新200行</option>
+                                <option value="500">最新500行</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="log-container" id="logContainer">
+                            {% if log_content %}
+                            <pre class="log-content">{% for line in log_content %}{{ line }}{% endfor %}</pre>
+                            {% else %}
+                            <p class="text-center">ログ情報がありません</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title">実行履歴</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>実行日時</th>
+                                        <th>所要時間</th>
+                                        <th>結果</th>
+                                        <th>詳細</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if step.result and step.result.execution_history %}
+                                        {% for history in step.result.execution_history %}
+                                        <tr>
+                                            <td>{{ history.start_time }}</td>
+                                            <td>{{ history.duration }}</td>
+                                            <td>
+                                                {% if history.success %}
+                                                <span class="badge bg-success">成功</span>
+                                                {% else %}
+                                                <span class="badge bg-danger">失敗</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if history.details %}
+                                                <button class="btn btn-sm btn-outline-info history-details-btn"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#historyDetailsModal"
+                                                        data-details="{{ history.details|tojson }}">
+                                                    詳細を表示
+                                                </button>
+                                                {% else %}
+                                                <span class="text-muted">詳細なし</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="4" class="text-center">実行履歴がありません</td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                {% if step.name == 'extract_emails' %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title">メールアドレス抽出の詳細</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>抽出方法</h6>
+                                <p>メールアドレス抽出は以下の優先順位で行われます：</p>
+                                <ol>
+                                    <li>info@</li>
+                                    <li>contact@</li>
+                                    <li>otoiawase@</li>
+                                    <li>sales@</li>
+                                    <li>eigyo@</li>
+                                    <li>soumu@</li>
+                                    <li>company@</li>
+                                    <li>office@</li>
+                                    <li>representative@</li>
+                                    <li>support@</li>
+                                </ol>
+                                <p>抽出されたメールアドレスはSMTP検証を行い、有効性を確認します。</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>抽出統計</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>項目</th>
+                                                <th>件数</th>
+                                                <th>割合</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>処理企業数</td>
+                                                <td>{{ step.result.total_companies|default(0) }}</td>
+                                                <td>100%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>抽出成功</td>
+                                                <td>{{ step.result.success_count|default(0) }}</td>
+                                                <td>{{ ((step.result.success_count|default(0) / step.result.total_companies|default(1)) * 100)|round(1) }}%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>抽出失敗</td>
+                                                <td>{{ step.result.failure_count|default(0) }}</td>
+                                                <td>{{ ((step.result.failure_count|default(0) / step.result.total_companies|default(1)) * 100)|round(1) }}%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>SMTP検証成功</td>
+                                                <td>{{ step.result.smtp_verified_count|default(0) }}</td>
+                                                <td>{{ ((step.result.smtp_verified_count|default(0) / step.result.success_count|default(1)) * 100)|round(1) }}%</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <h6>抽出パターン分布</h6>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <canvas id="extractionPatternChart" height="200"></canvas>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="table-responsive">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>パターン</th>
+                                                    <th>件数</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% if step.result.pattern_distribution %}
+                                                    {% for pattern, count in step.result.pattern_distribution.items() %}
+                                                    <tr>
+                                                        <td>{{ pattern }}</td>
+                                                        <td>{{ count }}</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <tr>
+                                                        <td colspan="2" class="text-center">データがありません</td>
+                                                    </tr>
+                                                {% endif %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <h6>抽出されたメールアドレス</h6>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>企業名</th>
+                                            <th>メールアドレス</th>
+                                            <th>抽出方法</th>
+                                            <th>SMTP検証</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="extractedEmailsTable">
+                                        <tr>
+                                            <td colspan="4" class="text-center">
+                                                <div class="spinner-border text-primary" role="status">
+                                                    <span class="visually-hidden">読み込み中...</span>
+                                                </div>
+                                                <p>メールアドレスを読み込んでいます...</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if step.name == 'analyze_websites' %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title">ウェブサイト分析の詳細</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>評価基準</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>カテゴリ</th>
+                                                <th>配点</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>ユーザー体験</td>
+                                                <td>45%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>デザイン品質</td>
+                                                <td>25%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>技術品質</td>
+                                                <td>30%</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <h6 class="mt-4">ランク分類基準</h6>
+                                <ul>
+                                    <li>Aランク: 80点以上</li>
+                                    <li>Bランク: 60〜79点</li>
+                                    <li>Cランク: 60点未満</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>分析統計</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>項目</th>
+                                                <th>件数</th>
+                                                <th>割合</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>処理企業数</td>
+                                                <td>{{ step.result.total_companies|default(0) }}</td>
+                                                <td>100%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>分析成功</td>
+                                                <td>{{ step.result.success_count|default(0) }}</td>
+                                                <td>{{ ((step.result.success_count|default(0) / step.result.total_companies|default(1)) * 100)|round(1) }}%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>分析失敗</td>
+                                                <td>{{ step.result.failure_count|default(0) }}</td>
+                                                <td>{{ ((step.result.failure_count|default(0) / step.result.total_companies|default(1)) * 100)|round(1) }}%</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <h6 class="mt-4">ランク分布</h6>
+                                <canvas id="rankDistributionChart" height="200"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <h6>カテゴリ別平均スコア</h6>
+                            <canvas id="categoryScoreChart" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if step.name == 'send_emails' %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title">メール送信の詳細</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>送信設定</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>ランク</th>
+                                                <th>送信先</th>
+                                                <th>件名</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Aランク</td>
+                                                <td>raxus.yamashita@gmail.com</td>
+                                                <td>【無料相談】30分で貴社サイトの成果を2倍に！専門家が最新トレンドをご紹介</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Bランク</td>
+                                                <td>naoki_yamashita@fortyfive.co.jp</td>
+                                                <td>【無料診断】3つの改善ポイントで貴社サイトの成果が劇的に向上します！</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Cランク</td>
+                                                <td>n.yamashita@raxus.inc</td>
+                                                <td>【業界最安値】月額1万円でプロ品質のウェブサイトが手に入る！初期費用も格安</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <p>送信者名: 山下直輝</p>
+                                <p>送信元アドレス: marketing@fortyfive.co.jp</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>送信統計</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>項目</th>
+                                                <th>件数</th>
+                                                <th>割合</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>送信対象企業数</td>
+                                                <td>{{ step.result.total_companies|default(0) }}</td>
+                                                <td>100%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>送信成功</td>
+                                                <td>{{ step.result.success_count|default(0) }}</td>
+                                                <td>{{ ((step.result.success_count|default(0) / step.result.total_companies|default(1)) * 100)|round(1) }}%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>送信失敗</td>
+                                                <td>{{ step.result.failure_count|default(0) }}</td>
+                                                <td>{{ ((step.result.failure_count|default(0) / step.result.total_companies|default(1)) * 100)|round(1) }}%</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <h6 class="mt-4">ランク別送信数</h6>
+                                <canvas id="emailRankChart" height="200"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <h6>送信時間分布</h6>
+                            <canvas id="sendTimeChart" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if step.name == 'process_bounces' %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title">バウンスメール処理の詳細</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>処理設定</h6>
+                                <p>バウンスメールは自動的に検出され、「Processed」フォルダに移動されます。</p>
+                                <p>バウンス情報は送信記録に反映され、今後の送信対象から除外されます。</p>
+
+                                <h6 class="mt-4">バウンス理由分類</h6>
+                                <ul>
+                                    <li>存在しないメールアドレス</li>
+                                    <li>メールボックス容量超過</li>
+                                    <li>受信拒否設定</li>
+                                    <li>サーバーエラー</li>
+                                    <li>その他のエラー</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>処理統計</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>項目</th>
+                                                <th>件数</th>
+                                                <th>割合</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>送信メール総数</td>
+                                                <td>{{ step.result.total_sent|default(0) }}</td>
+                                                <td>100%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>バウンス数</td>
+                                                <td>{{ step.result.bounce_count|default(0) }}</td>
+                                                <td>{{ ((step.result.bounce_count|default(0) / step.result.total_sent|default(1)) * 100)|round(1) }}%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>処理成功</td>
+                                                <td>{{ step.result.success_count|default(0) }}</td>
+                                                <td>{{ ((step.result.success_count|default(0) / step.result.bounce_count|default(1)) * 100)|round(1) }}%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>処理失敗</td>
+                                                <td>{{ step.result.failure_count|default(0) }}</td>
+                                                <td>{{ ((step.result.failure_count|default(0) / step.result.bounce_count|default(1)) * 100)|round(1) }}%</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <h6 class="mt-4">バウンス理由分布</h6>
+                                <canvas id="bounceReasonChart" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- 履歴詳細モーダル -->
+    <div class="modal fade" id="historyDetailsModal" tabindex="-1" aria-labelledby="historyDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="historyDetailsModalLabel">実行詳細</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="historyDetailsContent">
+                    <!-- 詳細内容がここに表示されます -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // 更新ボタン
+        document.getElementById('refreshBtn').addEventListener('click', function() {
+            location.reload();
+        });
+
+        // ログ更新ボタン
+        document.getElementById('refreshLogBtn').addEventListener('click', function() {
+            const logLines = document.getElementById('logLinesSelect').value;
+            fetch(`/api/get_log?step={{ step.name }}&lines=${logLines}`)
+                .then(response => response.json())
+                .then(data => {
+                    const logContainer = document.getElementById('logContainer');
+                    if (data.log_content && data.log_content.length > 0) {
+                        logContainer.innerHTML = `<pre class="log-content">${data.log_content.join('')}</pre>`;
+                    } else {
+                        logContainer.innerHTML = '<p class="text-center">ログ情報がありません</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('ログの更新に失敗しました:', error);
+                });
+        });
+
+        // 履歴詳細ボタン
+        document.querySelectorAll('.history-details-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const details = JSON.parse(this.getAttribute('data-details'));
+                const modalContent = document.getElementById('historyDetailsContent');
+
+                let html = '<div class="table-responsive"><table class="table table-sm">';
+                html += '<thead><tr><th>項目</th><th>値</th></tr></thead><tbody>';
+
+                for (const [key, value] of Object.entries(details)) {
+                    if (typeof value === 'object') {
+                        html += `<tr><td>${key}</td><td><pre>${JSON.stringify(value, null, 2)}</pre></td></tr>`;
+                    } else {
+                        html += `<tr><td>${key}</td><td>${value}</td></tr>`;
+                    }
+                }
+
+                html += '</tbody></table></div>';
+                modalContent.innerHTML = html;
+            });
+        });
+
+        // メールアドレス抽出結果を読み込む関数
+        function loadExtractedEmails() {
+            // 抽出結果ファイルのパスを取得
+            const outputFile = "{{ step.result.output_file }}";
+            if (!outputFile) {
+                document.getElementById('extractedEmailsTable').innerHTML = '<tr><td colspan="4" class="text-center">メールアドレス抽出結果ファイルが見つかりません</td></tr>';
+                return;
+            }
+
+            // APIエンドポイントを作成
+            fetch('/api/get_extracted_emails')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.emails && data.emails.length > 0) {
+                        let tableHtml = '';
+                        data.emails.forEach(email => {
+                            const smtpVerified = email.smtp_verification === 'はい' ?
+                                '<span class="badge bg-success">成功</span>' :
+                                '<span class="badge bg-danger">失敗</span>';
+
+                            tableHtml += `<tr>
+                                <td>${email.company_name || '-'}</td>
+                                <td>${email.email_address || '-'}</td>
+                                <td>${email.extraction_method || '-'}</td>
+                                <td>${smtpVerified}</td>
+                            </tr>`;
+                        });
+                        document.getElementById('extractedEmailsTable').innerHTML = tableHtml;
+                    } else {
+                        document.getElementById('extractedEmailsTable').innerHTML = '<tr><td colspan="4" class="text-center">メールアドレスが見つかりません</td></tr>';
+                    }
+                })
+                .catch(error => {
+                    console.error('メールアドレスの読み込みに失敗しました:', error);
+                    document.getElementById('extractedEmailsTable').innerHTML = '<tr><td colspan="4" class="text-center">メールアドレスの読み込みに失敗しました</td></tr>';
+                });
+        }
+
+        // チャートの初期化
+        function initCharts() {
+            {% if step.name == 'extract_emails' and step.result.pattern_distribution %}
+            // 抽出パターン分布チャート
+            const extractionPatternCtx = document.getElementById('extractionPatternChart').getContext('2d');
+            new Chart(extractionPatternCtx, {
+                type: 'bar',
+                data: {
+                    labels: [
+                        {% for pattern in step.result.pattern_distribution.keys() %}
+                        '{{ pattern }}',
+                        {% endfor %}
+                    ],
+                    datasets: [{
+                        label: '抽出数',
+                        data: [
+                            {% for count in step.result.pattern_distribution.values() %}
+                            {{ count }},
+                            {% endfor %}
+                        ],
+                        backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // メールアドレス抽出結果を読み込む
+            loadExtractedEmails();
+            {% endif %}
+
+            {% if step.name == 'analyze_websites' %}
+            // ランク分布チャート
+            const rankDistributionCtx = document.getElementById('rankDistributionChart').getContext('2d');
+            new Chart(rankDistributionCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Aランク', 'Bランク', 'Cランク'],
+                    datasets: [{
+                        data: [
+                            {{ step.result.rank_a_count|default(0) }},
+                            {{ step.result.rank_b_count|default(0) }},
+                            {{ step.result.rank_c_count|default(0) }}
+                        ],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.7)',
+                            'rgba(54, 162, 235, 0.7)',
+                            'rgba(255, 99, 132, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 99, 132, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+
+            // カテゴリ別平均スコアチャート
+            const categoryScoreCtx = document.getElementById('categoryScoreChart').getContext('2d');
+            new Chart(categoryScoreCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['ユーザー体験', 'デザイン品質', '技術品質'],
+                    datasets: [{
+                        label: '平均スコア',
+                        data: [
+                            {{ step.result.avg_ux_score|default(0) }},
+                            {{ step.result.avg_design_score|default(0) }},
+                            {{ step.result.avg_tech_score|default(0) }}
+                        ],
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+            {% endif %}
+
+            {% if step.name == 'send_emails' %}
+            // ランク別送信数チャート
+            const emailRankCtx = document.getElementById('emailRankChart').getContext('2d');
+            new Chart(emailRankCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Aランク', 'Bランク', 'Cランク'],
+                    datasets: [{
+                        data: [
+                            {{ step.result.rank_a_sent|default(0) }},
+                            {{ step.result.rank_b_sent|default(0) }},
+                            {{ step.result.rank_c_sent|default(0) }}
+                        ],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.7)',
+                            'rgba(54, 162, 235, 0.7)',
+                            'rgba(255, 99, 132, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 99, 132, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+
+            // 送信時間分布チャート
+            const sendTimeCtx = document.getElementById('sendTimeChart').getContext('2d');
+            new Chart(sendTimeCtx, {
+                type: 'line',
+                data: {
+                    labels: ['0時', '1時', '2時', '3時', '4時', '5時', '6時', '7時', '8時', '9時', '10時', '11時', '12時', '13時', '14時', '15時', '16時', '17時', '18時', '19時', '20時', '21時', '22時', '23時'],
+                    datasets: [{
+                        label: '送信数',
+                        data: [
+                            {% for hour in range(24) %}
+                            {{ step.result.hour_distribution|default({})|attr(hour|string, 0) }},
+                            {% endfor %}
+                        ],
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            {% endif %}
+
+            {% if step.name == 'process_bounces' %}
+            // バウンス理由分布チャート
+            const bounceReasonCtx = document.getElementById('bounceReasonChart').getContext('2d');
+            new Chart(bounceReasonCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['存在しないメールアドレス', 'メールボックス容量超過', '受信拒否設定', 'サーバーエラー', 'その他のエラー'],
+                    datasets: [{
+                        data: [
+                            {{ step.result.reason_nonexistent|default(0) }},
+                            {{ step.result.reason_full|default(0) }},
+                            {{ step.result.reason_rejected|default(0) }},
+                            {{ step.result.reason_server|default(0) }},
+                            {{ step.result.reason_other|default(0) }}
+                        ],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(54, 162, 235, 0.7)',
+                            'rgba(255, 206, 86, 0.7)',
+                            'rgba(75, 192, 192, 0.7)',
+                            'rgba(153, 102, 255, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+            {% endif %}
+        }
+
+        // ページ読み込み時にチャートを初期化
+        document.addEventListener('DOMContentLoaded', initCharts);
+    </script>
+</body>
+</html>

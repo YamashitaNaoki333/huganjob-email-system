@@ -1,0 +1,771 @@
+{% extends "base.html" %}
+
+{% block title %}企業管理 - HUGANJOB営業メール送信システム{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<style>
+.management-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.tab-container {
+    margin-bottom: 30px;
+}
+
+.nav-tabs {
+    border-bottom: 2px solid #dee2e6;
+    margin-bottom: 20px;
+}
+
+.nav-tabs .nav-link {
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: #6c757d;
+    font-weight: 500;
+    padding: 12px 24px;
+}
+
+.nav-tabs .nav-link.active {
+    color: #007bff;
+    border-bottom-color: #007bff;
+    background-color: transparent;
+}
+
+.nav-tabs .nav-link:hover {
+    border-bottom-color: #007bff;
+    color: #007bff;
+}
+
+.tab-content {
+    padding: 20px 0;
+}
+
+.form-container {
+    background: #f8f9fa;
+    padding: 30px;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: block;
+    color: #495057;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.15s ease-in-out;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    margin-left: 10px;
+}
+
+.upload-area {
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 40px;
+    text-align: center;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.upload-area:hover {
+    border-color: #007bff;
+    background-color: #e3f2fd;
+}
+
+.upload-area.dragover {
+    border-color: #007bff;
+    background-color: #e3f2fd;
+}
+
+.upload-icon {
+    font-size: 48px;
+    color: #6c757d;
+    margin-bottom: 16px;
+}
+
+.upload-text {
+    font-size: 18px;
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+.upload-subtext {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.file-info {
+    background-color: #e9ecef;
+    padding: 15px;
+    border-radius: 6px;
+    margin-top: 15px;
+}
+
+.preview-table {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+}
+
+.alert {
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+}
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.alert-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+
+.loading-spinner {
+    display: none;
+    text-align: center;
+    padding: 20px;
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+.feature-card {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.feature-icon {
+    font-size: 24px;
+    color: #007bff;
+    margin-bottom: 10px;
+}
+
+.feature-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #495057;
+}
+
+.feature-description {
+    color: #6c757d;
+    font-size: 14px;
+    line-height: 1.5;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="management-container">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">
+                <i class="fas fa-building me-2"></i>企業管理
+                <small class="text-muted">- 企業追加・CSVインポート</small>
+            </h1>
+        </div>
+    </div>
+
+    <!-- タブナビゲーション -->
+    <div class="tab-container">
+        <ul class="nav nav-tabs" id="managementTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="single-add-tab" data-bs-toggle="tab" data-bs-target="#single-add" type="button" role="tab">
+                    <i class="fas fa-plus me-2"></i>単体企業追加
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="csv-import-tab" data-bs-toggle="tab" data-bs-target="#csv-import" type="button" role="tab">
+                    <i class="fas fa-file-csv me-2"></i>CSV一括インポート
+                </button>
+            </li>
+        </ul>
+    </div>
+
+    <!-- タブコンテンツ -->
+    <div class="tab-content" id="managementTabContent">
+        <!-- 単体企業追加タブ -->
+        <div class="tab-pane fade show active" id="single-add" role="tabpanel">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-container">
+                        <h3 class="mb-4">
+                            <i class="fas fa-building me-2"></i>新規企業情報追加
+                        </h3>
+                        
+                        <form id="addCompanyForm">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="companyName" class="form-label">企業名 <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="companyName" name="company_name" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="companyUrl" class="form-label">企業ホームページ <span class="text-danger">*</span></label>
+                                        <input type="url" class="form-control" id="companyUrl" name="company_url" placeholder="https://example.com" required>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="emailAddress" class="form-label">メールアドレス</label>
+                                        <input type="email" class="form-control" id="emailAddress" name="email_address" placeholder="info@example.com">
+                                        <small class="form-text text-muted">空欄の場合、ホームページから自動抽出を試行します</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="jobPosition" class="form-label">募集職種</label>
+                                        <input type="text" class="form-control" id="jobPosition" name="job_position" placeholder="エンジニア、営業など">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-plus me-2"></i>企業を追加
+                                </button>
+                                <button type="reset" class="btn btn-secondary">
+                                    <i class="fas fa-undo me-2"></i>リセット
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <!-- 結果表示エリア -->
+                        <div id="addResult" class="mt-4"></div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <div class="feature-title">単体追加について</div>
+                        <div class="feature-description">
+                            企業情報を1社ずつ手動で追加できます。メールアドレスが不明な場合は、ホームページから自動抽出を試行します。
+                        </div>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="feature-title">重複チェック</div>
+                        <div class="feature-description">
+                            企業ドメインと企業名による重複チェックを自動実行し、既存企業との重複を防止します。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CSV一括インポートタブ -->
+        <div class="tab-pane fade" id="csv-import" role="tabpanel">
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-container">
+                        <h3 class="mb-4">
+                            <i class="fas fa-file-csv me-2"></i>CSV一括インポート
+                        </h3>
+                        
+                        <!-- ファイルアップロードエリア -->
+                        <div class="upload-area" id="uploadArea">
+                            <div class="upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <div class="upload-text">CSVファイルをドラッグ&ドロップ</div>
+                            <div class="upload-subtext">または、クリックしてファイルを選択</div>
+                            <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
+                        </div>
+                        
+                        <!-- ファイル情報表示 -->
+                        <div id="fileInfo" class="file-info" style="display: none;">
+                            <h5>選択されたファイル</h5>
+                            <p id="fileName"></p>
+                            <p id="fileSize"></p>
+                        </div>
+                        
+                        <!-- プレビューエリア -->
+                        <div id="previewArea" style="display: none;">
+                            <h5 class="mt-4">データプレビュー</h5>
+                            <div class="preview-table">
+                                <table class="table table-striped" id="previewTable">
+                                    <thead></thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="mt-3">
+                                <button type="button" class="btn btn-primary" id="confirmImport">
+                                    <i class="fas fa-check me-2"></i>インポート実行
+                                </button>
+                                <button type="button" class="btn btn-secondary" id="cancelImport">
+                                    <i class="fas fa-times me-2"></i>キャンセル
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 読み込み中表示 -->
+                        <div id="loadingSpinner" class="loading-spinner">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">読み込み中...</span>
+                            </div>
+                            <p class="mt-2">処理中です...</p>
+                        </div>
+                        
+                        <!-- 結果表示エリア -->
+                        <div id="importResult" class="mt-4"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="feature-title">CSVフォーマット</div>
+                        <div class="feature-description">
+                            必須列: 企業名, 企業ホームページ<br>
+                            オプション列: メールアドレス, 募集職種<br>
+                            ヘッダー行が必要です。
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <div class="feature-title">自動処理機能</div>
+                        <div class="feature-description">
+                            重複チェック、メールアドレス自動抽出、データ検証を自動実行します。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// 単体企業追加機能
+document.getElementById('addCompanyForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    const data = {
+        company_name: formData.get('company_name'),
+        company_url: formData.get('company_url'),
+        email_address: formData.get('email_address'),
+        job_position: formData.get('job_position')
+    };
+
+    // 結果エリアをクリア
+    const resultDiv = document.getElementById('addResult');
+    resultDiv.innerHTML = '<div class="alert alert-info"><i class="fas fa-spinner fa-spin me-2"></i>企業情報を追加中...</div>';
+
+    fetch('/api/add-company', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            resultDiv.innerHTML = `
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <strong>企業追加完了</strong><br>
+                    企業名: ${data.company_name}<br>
+                    企業ID: ${data.company_id}<br>
+                    ${data.email_extracted ? 'メールアドレス自動抽出: ' + data.email_address : ''}
+                    ${data.duplicate_handled ? '<br><span class="text-warning">重複企業として処理されました</span>' : ''}
+                </div>
+            `;
+            // フォームをリセット
+            this.reset();
+        } else {
+            resultDiv.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>エラー</strong><br>
+                    ${data.error}
+                </div>
+            `;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        resultDiv.innerHTML = `
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>通信エラー</strong><br>
+                サーバーとの通信に失敗しました。
+            </div>
+        `;
+    });
+});
+
+// CSV一括インポート機能
+const uploadArea = document.getElementById('uploadArea');
+const csvFileInput = document.getElementById('csvFileInput');
+const fileInfo = document.getElementById('fileInfo');
+const previewArea = document.getElementById('previewArea');
+const loadingSpinner = document.getElementById('loadingSpinner');
+const importResult = document.getElementById('importResult');
+
+// ファイル選択エリアのクリックイベント
+uploadArea.addEventListener('click', () => {
+    csvFileInput.click();
+});
+
+// ドラッグ&ドロップ機能
+uploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.classList.add('dragover');
+});
+
+uploadArea.addEventListener('dragleave', () => {
+    uploadArea.classList.remove('dragover');
+});
+
+uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove('dragover');
+
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        handleFileSelect(files[0]);
+    }
+});
+
+// ファイル選択イベント
+csvFileInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) {
+        handleFileSelect(e.target.files[0]);
+    }
+});
+
+// ファイル処理
+function handleFileSelect(file) {
+    if (!file.name.toLowerCase().endsWith('.csv')) {
+        showAlert('CSVファイルを選択してください。', 'danger');
+        return;
+    }
+
+    // ファイル情報表示
+    document.getElementById('fileName').textContent = `ファイル名: ${file.name}`;
+    document.getElementById('fileSize').textContent = `ファイルサイズ: ${(file.size / 1024).toFixed(2)} KB`;
+    fileInfo.style.display = 'block';
+
+    // ファイルアップロード
+    uploadFile(file);
+}
+
+// ファイルアップロード
+function uploadFile(file) {
+    const formData = new FormData();
+    formData.append('csv_file', file);
+
+    loadingSpinner.style.display = 'block';
+    previewArea.style.display = 'none';
+    importResult.innerHTML = '';
+
+    fetch('/api/csv-import', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        return response.json();
+    })
+    .then(data => {
+        loadingSpinner.style.display = 'none';
+        console.log('Response data:', data);
+
+        if (data.success) {
+            displayPreview(data.preview_data, data.temp_file);
+        } else {
+            const errorMsg = data.error || 'Unknown error';
+            const detailsMsg = data.details ? `\n詳細: ${data.details}` : '';
+            showAlert(`アップロードエラー: ${errorMsg}${detailsMsg}`, 'danger');
+            console.error('Server error:', data);
+        }
+    })
+    .catch(error => {
+        loadingSpinner.style.display = 'none';
+        console.error('Fetch error:', error);
+        showAlert(`ファイルアップロード中にエラーが発生しました: ${error.message}`, 'danger');
+    });
+}
+
+// プレビュー表示
+function displayPreview(previewData, tempFile) {
+    const table = document.getElementById('previewTable');
+    const thead = table.querySelector('thead');
+    const tbody = table.querySelector('tbody');
+
+    // ヘッダー作成
+    thead.innerHTML = '';
+    if (previewData.length > 0) {
+        const headerRow = document.createElement('tr');
+        Object.keys(previewData[0]).forEach(key => {
+            const th = document.createElement('th');
+            th.textContent = key;
+            headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+    }
+
+    // データ行作成
+    tbody.innerHTML = '';
+    previewData.slice(0, 10).forEach(row => { // 最初の10行のみ表示
+        const tr = document.createElement('tr');
+        Object.values(row).forEach(value => {
+            const td = document.createElement('td');
+            td.textContent = value || '';
+            tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+    });
+
+    previewArea.style.display = 'block';
+
+    // インポート確定ボタンにイベント設定
+    document.getElementById('confirmImport').onclick = () => confirmImport(tempFile);
+    document.getElementById('cancelImport').onclick = cancelImport;
+}
+
+// インポート確定
+function confirmImport(tempFile) {
+    loadingSpinner.style.display = 'block';
+    previewArea.style.display = 'none';
+
+    fetch('/api/csv-import-confirm', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ temp_file: tempFile })
+    })
+    .then(response => {
+        console.log('Confirm response status:', response.status);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        return response.json();
+    })
+    .then(data => {
+        loadingSpinner.style.display = 'none';
+        console.log('Confirm response data:', data);
+
+        if (data.success) {
+            // データ構造を確認してから表示
+            const totalProcessed = data.total_processed || 0;
+            const addedCount = data.added || 0;
+            const skippedCount = data.skipped || 0;
+            const errorCount = data.errors || 0;
+            const excludedCount = data.incomplete_excluded || 0;  // 🆕 不完全データ除外数
+
+            let alertClass = 'alert-success';
+            if (errorCount > 0) {
+                alertClass = errorCount > addedCount ? 'alert-warning' : 'alert-info';
+            }
+
+            let detailsHtml = '';
+            if (data.details && data.details.length > 0) {
+                const errorDetails = data.details.filter(d => d.status === 'error').slice(0, 10); // 最初の10件のエラーを表示
+                const excludedDetails = data.details.filter(d => d.status === 'excluded').slice(0, 5); // 🆕 除外詳細
+
+                if (errorDetails.length > 0 || excludedDetails.length > 0) {
+                    detailsHtml = `<div class="mt-3">`;
+
+                    if (errorDetails.length > 0) {
+                        detailsHtml += `
+                            <h6>エラー詳細（最初の10件）:</h6>
+                            <ul class="list-unstyled">
+                                ${errorDetails.map(detail => `
+                                    <li class="text-danger small">
+                                        行${detail.row}: ${detail.company_name || '不明'} - ${detail.message}
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        `;
+                    }
+
+                    if (excludedDetails.length > 0) {
+                        detailsHtml += `
+                            <h6>除外された企業（最初の5件）:</h6>
+                            <ul class="list-unstyled">
+                                ${excludedDetails.map(detail => `
+                                    <li class="text-info small">
+                                        行${detail.row}: ${detail.company_name || '不明'} - ${detail.message}
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        `;
+                    }
+
+                    detailsHtml += `</div>`;
+                }
+            }
+
+            // 🆕 除外数を表示に追加
+            let excludedHtml = '';
+            if (excludedCount > 0) {
+                excludedHtml = `<br>不完全データ除外: ${excludedCount}件`;
+            }
+
+            importResult.innerHTML = `
+                <div class="alert ${alertClass}">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <strong>インポート完了</strong><br>
+                    処理済み: ${totalProcessed}件<br>
+                    追加成功: ${addedCount}件<br>
+                    重複スキップ: ${skippedCount}件${excludedHtml}<br>
+                    エラー: ${errorCount}件
+                    ${detailsHtml}
+                </div>
+            `;
+
+            // 🆕 インポート成功時にページを自動リロード（即時反映のため）
+            if (addedCount > 0) {
+                setTimeout(() => {
+                    console.log('CSVインポート成功 - ページをリロードして最新データを表示します');
+                    window.location.reload();
+                }, 2000); // 2秒後にリロード
+            }
+        } else {
+            const errorMsg = data.error || 'Unknown error';
+            const detailsMsg = data.details ? `\n詳細: ${data.details}` : '';
+            showAlert(`インポートエラー: ${errorMsg}${detailsMsg}`, 'danger');
+            console.error('Server error:', data);
+        }
+
+        // UI リセット
+        resetImportUI();
+    })
+    .catch(error => {
+        loadingSpinner.style.display = 'none';
+        console.error('Confirm fetch error:', error);
+        showAlert(`インポート中にエラーが発生しました: ${error.message}`, 'danger');
+    });
+}
+
+// インポートキャンセル
+function cancelImport() {
+    resetImportUI();
+    showAlert('インポートがキャンセルされました。', 'info');
+}
+
+// UI リセット
+function resetImportUI() {
+    fileInfo.style.display = 'none';
+    previewArea.style.display = 'none';
+    csvFileInput.value = '';
+}
+
+// アラート表示
+function showAlert(message, type) {
+    const alertClass = `alert-${type}`;
+    const iconClass = type === 'success' ? 'fa-check-circle' :
+                     type === 'danger' ? 'fa-exclamation-triangle' :
+                     'fa-info-circle';
+
+    importResult.innerHTML = `
+        <div class="alert ${alertClass}">
+            <i class="fas ${iconClass} me-2"></i>
+            ${message}
+        </div>
+    `;
+}
+</script>
+{% endblock %}

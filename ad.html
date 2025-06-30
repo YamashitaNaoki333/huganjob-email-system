@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【売上20%UPの実績】リスティング広告・SNS広告で集客を最大化しませんか？</title>
+    <style type="text/css">
+        /* ベーススタイル */
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+
+        /* メインコンテナ */
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        /* ヘッダー */
+        .header {
+            background-color: #222222;
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%);
+            z-index: 1;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .header h1 {
+            color: #ffffff;
+            font-size: 26px;
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.9);
+            font-size: 16px;
+            margin: 10px 0 0;
+        }
+
+        /* コンテンツ */
+        .content {
+            padding: 40px 30px;
+        }
+
+        h2 {
+            color: #222222;
+            font-size: 24px;
+            margin: 30px 0 20px;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            /* 貴社の水色ベースに合わせて色を変更 */
+            background-color: #3498db;
+        }
+
+        h3 {
+            color: #222222;
+            font-size: 20px;
+            margin: 25px 0 15px;
+        }
+
+        p {
+            margin-bottom: 20px;
+            font-size: 16px;
+            color: #555;
+        }
+
+        /* ハイライト */
+        .highlight {
+            /* 貴社の水色ベースに合わせて色を変更 */
+            background-color: #f0f8ff;
+            border-left: 4px solid #3498db;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .highlight p {
+            margin: 0;
+            font-size: 17px;
+        }
+        
+        /* お悩みリスト */
+        .problem-section {
+            margin: 40px 0;
+        }
+
+        .problem-cards {
+            display: flex;
+            flex-direction: row;
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .problem-card {
+            background: linear-gradient(135deg, #fff5f5 0%, #fff 100%);
+            border: 1px solid #ffebee;
+            border-top: 5px solid #e74c3c;
+            border-radius: 12px;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.1);
+            flex: 1;
+            min-height: 200px;
+        }
+
+        .problem-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(231, 76, 60, 0.2);
+        }
+
+        .problem-icon {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            flex-shrink: 0;
+            margin-bottom: 10px;
+        }
+
+        .problem-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .problem-text {
+            font-size: 15px;
+            color: #2c3e50;
+            margin: 0;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        /* 解決策セクション */
+        .solution-section {
+            background: linear-gradient(135deg, #f0f8ff 0%, #e8f4fd 100%);
+            border-radius: 16px;
+            padding: 40px 30px;
+            margin: 40px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .solution-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(52, 152, 219, 0.1) 0%, transparent 70%);
+            z-index: 1;
+        }
+
+        .solution-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .solution-title {
+            font-size: 24px;
+            color: #2c3e50;
+            margin: 0 0 20px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .solution-text {
+            font-size: 18px;
+            color: #34495e;
+            margin: 0;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .cpo-highlight {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        /* CPA vs CPO 比較チャート */
+        .comparison-section {
+            margin: 50px 0;
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 40px 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .comparison-title {
+            text-align: center;
+            font-size: 24px;
+            color: #2c3e50;
+            margin: 0 0 40px;
+            font-weight: 700;
+        }
+
+        .comparison-cards {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .comparison-card {
+            flex: 1;
+            text-align: center;
+            padding: 30px 20px;
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .cpa-card {
+            background: linear-gradient(135deg, #fff5f5 0%, #ffebee 100%);
+            border: 2px solid #ffcdd2;
+        }
+
+        .cpo-card {
+            background: linear-gradient(135deg, #f0f8ff 0%, #e3f2fd 100%);
+            border: 2px solid #bbdefb;
+        }
+
+        .comparison-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: white;
+        }
+
+        .cpa-card .comparison-icon {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        .cpo-card .comparison-icon {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+
+        .comparison-label {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 0 0 15px;
+            color: #2c3e50;
+        }
+
+        .comparison-description {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .arrow-down {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 30px;
+            color: #3498db;
+        }
+
+        .result-box {
+            background: #ffffff;
+            border: 3px solid #2ecc71;
+            color: #2c3e50;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .result-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0 0 10px;
+            color: #27ae60;
+        }
+
+        .result-text {
+            font-size: 16px;
+            margin: 0;
+            color: #2c3e50;
+        }
+
+        /* 機能リスト */
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            flex: 1;
+            min-width: 180px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            padding: 20px;
+            text-align: center;
+            /* 貴社の水色ベースに合わせて色を変更 */
+            border-top: 4px solid #3498db;
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 15px;
+            /* 貴社の水色ベースに合わせて色を変更 */
+            background-color: #f0f8ff;
+            border-radius: 50%;
+            display: table;
+            line-height: 1;
+            text-align: center;
+        }
+
+        .feature-icon span {
+            display: table-cell;
+            vertical-align: middle;
+            font-size: 24px;
+            /* 貴社の水色ベースに合わせて色を変更 */
+            color: #3498db;
+            text-align: center;
+            line-height: 1;
+        }
+
+        .feature-title {
+            margin: 0 0 10px;
+            font-size: 18px;
+            color: #222222;
+        }
+
+        .feature-description {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* ボタン */
+        .button {
+            display: inline-block;
+            /* 貴社の水色ベースに合わせて色を変更 */
+            background-color: #3498db;
+            color: white !important;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 16px;
+            text-align: center;
+            margin: 20px 0;
+            transition: background-color 0.3s, transform 0.3s;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+        }
+
+        .button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(52, 152, 219, 0.5);
+        }
+
+        .button-center {
+            display: block;
+            width: 80%;
+            margin: 30px auto;
+        }
+
+        /* フッター */
+        .footer {
+            background-color: #222222;
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .footer-contact {
+            margin: 20px 0;
+        }
+
+        .footer-contact p {
+            margin: 5px 0;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .footer-contact a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .footer-links {
+            margin: 20px 0;
+        }
+
+        .footer-links a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 14px;
+        }
+
+        .footer-copyright {
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+            margin-top: 20px;
+        }
+
+        /* タブレット対応 */
+        @media screen and (max-width: 900px) {
+            .problem-cards {
+                gap: 20px;
+            }
+
+            .problem-card {
+                padding: 25px 15px;
+            }
+
+            .problem-icon {
+                width: 70px;
+                height: 70px;
+                font-size: 35px;
+            }
+
+            .problem-text {
+                font-size: 14px;
+            }
+        }
+
+        /* レスポンシブ対応 */
+        @media screen and (max-width: 600px) {
+            .container {
+                width: 100%;
+                border-radius: 0;
+            }
+            .content {
+                padding: 30px 20px;
+            }
+            .features {
+                flex-direction: column;
+            }
+            .feature-card {
+                width: auto;
+                margin-bottom: 15px;
+            }
+            .button-center {
+                width: 100%;
+            }
+
+            /* 課題カードのモバイル対応 */
+            .problem-cards {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .problem-card {
+                flex-direction: row;
+                text-align: left;
+                gap: 20px;
+                padding: 25px;
+                min-height: auto;
+            }
+
+            .problem-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 30px;
+                margin-bottom: 0;
+                flex-shrink: 0;
+            }
+
+            .problem-content {
+                align-items: flex-start;
+            }
+
+            .problem-text {
+                font-size: 16px;
+            }
+
+            /* 比較セクションのモバイル対応 */
+            .comparison-cards {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .comparison-section {
+                padding: 30px 20px;
+            }
+
+            .solution-section {
+                padding: 30px 20px;
+            }
+
+            .comparison-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-overlay"></div>
+            <div class="header-content">
+                <div style="margin-bottom: 20px;">
+                    <div style="font-size: 24px; font-weight: bold; color: white;">株式会社フォーティファイヴ</div>
+                </div>
+                <h1>CPO改善で利益を最大化する<br>Web広告運用代行</h1>
+                <p>貴社のビジネス成長を加速させる広告パートナー</p>
+            </div>
+        </div>
+
+        <div class="content">
+            <p>{{会社名}} ご担当者様</p>
+
+            <p>突然のご連絡失礼いたします。株式会社フォーティファイヴの山下と申します。</p>
+
+            <p>私たちは、企業の利益最大化に貢献するWeb広告運用を専門としております。この度、貴社の事業内容を拝見し、弊社のサービスがお役立てできるのではないかと考え、ご連絡いたしました。</p>
+
+            <div class="problem-section">
+                <h2>Web広告の成果に、このような課題はありませんか？</h2>
+
+                <div class="problem-cards">
+                    <div class="problem-card">
+                        <div class="problem-icon">❓</div>
+                        <div class="problem-content">
+                            <p class="problem-text">「広告運用を始めたいが、<strong>何から手をつければ良いか分からない</strong>」</p>
+                        </div>
+                    </div>
+
+                    <div class="problem-card">
+                        <div class="problem-icon">📉</div>
+                        <div class="problem-content">
+                            <p class="problem-text">「自社で運用してみたが、<strong>期待したほどの効果が出ていない</strong>」</p>
+                        </div>
+                    </div>
+
+                    <div class="problem-card">
+                        <div class="problem-icon">💸</div>
+                        <div class="problem-content">
+                            <p class="problem-text">「代理店に任せているが、<strong>CPA（獲得単価）が合わず利益に繋がらない</strong>」</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="solution-section">
+                <div class="solution-content">
+                    <h3 class="solution-title">そのお悩み、解決できます。</h3>
+                    <p class="solution-text">私たちは単なるCPA（獲得単価）ではなく、貴社の<span class="cpo-highlight">最終的な受注単価（CPO）</span>にこだわり、事業の利益を最大化する運用を徹底いたします。</p>
+                </div>
+            </div>
+
+            <div class="comparison-section">
+                <h3 class="comparison-title">CPA重視 vs CPO重視の違い</h3>
+
+                <div class="comparison-cards">
+                    <div class="comparison-card cpa-card">
+                        <div class="comparison-icon">📊</div>
+                        <h4 class="comparison-label">従来のCPA重視</h4>
+                        <p class="comparison-description">獲得数を重視するため、質の低いリードが混在し、最終的な利益に繋がらないケースが多発</p>
+                    </div>
+
+                    <div class="comparison-card cpo-card">
+                        <div class="comparison-icon">🎯</div>
+                        <h4 class="comparison-label">弊社のCPO重視</h4>
+                        <p class="comparison-description">最終受注まで追跡し、真に利益に貢献する質の高いリードの獲得に集中</p>
+                    </div>
+                </div>
+
+                <div class="arrow-down">⬇️</div>
+
+                <div class="result-box">
+                    <h4 class="result-title">結果：貴社の利益最大化を実現</h4>
+                    <p class="result-text">単なる数字の改善ではなく、ビジネス成長に直結する成果をお約束します</p>
+                </div>
+            </div>
+
+            <h2>弊社の包括的な運用サポート</h2>
+
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon"><span>💡</span></div>
+                    <h3 class="feature-title">戦略立案・初期設定</h3>
+                    <p class="feature-description">貴社のビジネスに合わせた最適な戦略の立案とアカウントの初期設計を行います。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><span>⚙️</span></div>
+                    <h3 class="feature-title">日々の運用・最適化</h3>
+                    <p class="feature-description">キーワード選定や広告文改善、予算管理など、日々の運用を専門家が代行します。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><span>📈</span></div>
+                    <h3 class="feature-title">詳細なレポーティング</h3>
+                    <p class="feature-description">月次の成果レポートと改善提案を含む報告会で、運用の透明性を確保します。</p>
+                </div>
+            </div>
+             <div class="features" style="margin-top:0;">
+                <div class="feature-card">
+                    <div class="feature-icon"><span>🌐</span></div>
+                    <h3 class="feature-title">マルチチャネル対応</h3>
+                    <p class="feature-description">Google/Yahooリスティング広告から各種SNS広告まで幅広く対応可能です。</p>
+                </div>
+                 <div class="feature-card">
+                    <div class="feature-icon"><span>🎯</span></div>
+                    <h3 class="feature-title">CPOベースの改善提案</h3>
+                    <p class="feature-description">獲得数だけでなく、その先の「利益」を見据えた本質的な改善提案を行います。</p>
+                </div>
+                 <div class="feature-card">
+                    <div class="feature-icon"><span>💬</span></div>
+                    <h3 class="feature-title">随時相談対応</h3>
+                    <p class="feature-description">メール・チャット・お電話で、いつでもお気軽にご相談いただけます。</p>
+                </div>
+            </div>
+
+            <h3 style="text-align: center; margin-top: 40px;">費用・ご契約について</h3>
+             <table width="100%" border="0" cellspacing="0" cellpadding="0" style="text-align: center; margin-top: 20px; background-color:#f8f9fa; border:1px solid #e2e6ea; border-radius: 8px; padding: 20px;">
+                <tr>
+                    <td>
+                        <p style="margin:0; font-size: 18px;">運用代行手数料：<strong style="font-size: 22px; color: #3498db;">月間広告費の20％</strong>（税別）</p>
+                        <p style="margin:5px 0 0; font-size: 14px; color: #666;">※最低手数料：10,000円（税別） / 最低契約期間：6ヶ月</p>
+                    </td>
+                </tr>
+            </table>
+
+            <h2>無料オンライン相談のご案内</h2>
+
+            <p>弊社のサービスが貴社のビジネスにどのように貢献できるか、より具体的にお話しさせていただきたく、30分程度の無料オンライン相談を承っております。</p>
+            <p style="text-align:center;">ご都合の良い日時を、以下のボタンより直接ご予約ください。</p>
+            
+            <a href="https://timerex.net/s/fortyfive/13eeee15" class="button button-center">無料オンライン相談を予約する</a>
+
+            <p style="text-align: center; margin-top: 0; font-size: 14px; color: #666;">
+                ※ 無理な営業は一切いたしません。まずはお話をお聞かせください。
+            </p>
+        </div>
+
+        <div class="footer">
+            <div style="margin-bottom: 20px;">
+                <div style="font-size: 20px; font-weight: bold; color: white;">株式会社フォーティファイヴ</div>
+            </div>
+
+            <div class="footer-contact">
+                <p>Web広告運用担当：山下 直輝</p>
+                <p>TEL: <a href="tel:0664548045">06-6454-8045</a>（平日9:00-18:00）</p>
+                <p>Email: <a href="mailto:marketing@fortyfive.co.jp">marketing@fortyfive.co.jp</a></p>
+                <p>〒553-0003 大阪市福島区福島3-7-39 藤和堂島ハイタウン905</p>
+            </div>
+
+            <div class="footer-links">
+                <a href="https://www.045partner.com/">ホームページ</a>
+                <a href="https://www.045partner.com/service/web-advertising">サービス</a>
+                <a href="https://www.045partner.com/contact">お問い合わせ</a>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLScc0nkVHSvZQHPm9p5KbssqINye-LVIS8c7YOpT_uVhrqR6Tw/viewform">メール配信停止</a>
+            </div>
+
+            <div class="footer-copyright">
+                © 2025 株式会社フォーティファイヴ All Rights Reserved.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

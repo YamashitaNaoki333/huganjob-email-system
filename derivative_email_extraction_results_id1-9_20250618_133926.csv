@@ -1,0 +1,10 @@
+﻿企業ID,企業名,URL,ドメイン,メールアドレス,抽出方法,信頼度,検証レベル,SMTP検証,キャッチオール,ロールベース,詳細
+1,1,司法書士法人中央ライズアクロス,chuou-rise-across.co.jp,info@chuou-rise-across.co.jp,generated_mechanical,0.60,mechanical,いいえ,いいえ,はい,SMTP検証をスキップして機械的に生成
+2,2,おばた司法書士事務所,obata-shiho.co.jp,info@obata-shiho.co.jp,generated_mechanical,0.60,mechanical,いいえ,いいえ,はい,SMTP検証をスキップして機械的に生成
+3,3,司法書士法人Ｒｅｅ　Ｐｌｕｓ,ree-plus.co.jp,info@ree-plus.co.jp,generated_mechanical,0.60,mechanical,いいえ,いいえ,はい,SMTP検証をスキップして機械的に生成
+4,4,司法書士あおば法務事務所,aoba-legal.co.jp,info@aoba-legal.co.jp,generated_mechanical,0.60,mechanical,いいえ,いいえ,はい,SMTP検証をスキップして機械的に生成
+5,5,ｓａｋｕ－ＲＡ司法書士法人,saku-ra-shiho.co.jp,info@saku-ra-shiho.co.jp,generated_mechanical,0.60,mechanical,いいえ,いいえ,はい,SMTP検証をスキップして機械的に生成
+6,6,あなまち司法書士事務所,anamachi-shiho.co.jp,info@anamachi-shiho.co.jp,generated_mechanical,0.60,mechanical,いいえ,いいえ,はい,SMTP検証をスキップして機械的に生成
+7,7,司法書士法人髙橋啓事務所,takahashi-kei.co.jp,info@takahashi-kei.co.jp,generated_mechanical,0.60,mechanical,いいえ,いいえ,はい,SMTP検証をスキップして機械的に生成
+8,8,ひまわり司法書士法人　千葉事務所,himawari-chiba.co.jp,info@himawari-chiba.co.jp,generated_mechanical,0.60,mechanical,いいえ,いいえ,はい,SMTP検証をスキップして機械的に生成
+9,9,司法書士法人小笠原合同事務所（相続遺言相談センター西宮・徳島）,ogasawara-legal.co.jp,info@ogasawara-legal.co.jp,generated_mechanical,0.60,mechanical,いいえ,いいえ,はい,SMTP検証をスキップして機械的に生成

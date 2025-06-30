@@ -1,0 +1,219 @@
+{
+  "processing_date": "2025-06-23T15:46:08.675862",
+  "total_bounce_companies": 20,
+  "manual_bounce_addresses": [
+    "info@www.yoshimoto.co.jp:443",
+    "info@sincere.co.jp",
+    "info@www.osakagaigo.ac.jp",
+    "info@www.h2j.jp",
+    "info@www.orientalbakery.co.jp",
+    "info@www.flex-og.jp",
+    "info@www.aoikokuban.co.jp",
+    "info@www.hanei-co.jp",
+    "info@www.crosscorporation.co.jp",
+    "info@www.konishi-mark.com",
+    "info@www.somax.co.jp",
+    "info@www.nikki-tr.co.jp",
+    "info@www.manneken.co.jp",
+    "info@www.seedassist.co.jp",
+    "info@www.advance-1st.co.jp",
+    "info@www.koutokudenkou.co.jp",
+    "info@www.teruteru.co.jp",
+    "info@www.tsukitora.com",
+    "info@www.naniwakanri.co.jp",
+    "info@www.hayashikazuji.co.jp"
+  ],
+  "bounce_details": [
+    {
+      "company_id": 28,
+      "company_name": "吉本興業ホールディングス株式会社",
+      "email_address": "info@www.yoshimoto.co.jp:443",
+      "job_position": "総合職",
+      "bounce_type": "permanent",
+      "send_datetime": "2025-06-23 13:20:08",
+      "error_message": "Bad recipient address syntax (port number included)"
+    },
+    {
+      "company_id": 2,
+      "company_name": "ラ・シンシア株式会社",
+      "email_address": "info@sincere.co.jp",
+      "job_position": "製造スタッフ",
+      "bounce_type": "permanent",
+      "send_datetime": "2025-06-23 12:35:20",
+      "error_message": "Mail delivery failed (bounce detected in inbox)"
+    },
+    {
+      "company_id": 6,
+      "company_name": "学校法人文際学園",
+      "email_address": "info@www.osakagaigo.ac.jp",
+      "job_position": "英語講師",
+      "bounce_type": "permanent",
+      "send_datetime": "2025-06-23 12:38:36",
+      "error_message": "Invalid email format (www prefix)"
+    },
+    {
+      "company_id": 7,
+      "company_name": "ハウスホールドジャパン株式会社",
+      "email_address": "info@www.h2j.jp",
+      "job_position": "ルート営業",
+      "bounce_type": "permanent",
+      "send_datetime": "2025-06-23 12:38:41",
+      "error_message": "Invalid email format (www prefix)"
+    },
+    {
+      "company_id": 8,
+      "company_name": "株式会社オリエンタルベーカリー",
+      "email_address": "info@www.orientalbakery.co.jp",
+      "job_position": "ルート配送ドライバー",
+      "bounce_type": "permanent",
+      "send_datetime": "2025-06-23 12:39:46",
+      "error_message": "Invalid email format (www prefix)"
+    },
+    {
+      "company_id": 9,
+      "company_name": "株式会社フレックス",
+      "email_address": "info@www.flex-og.jp",
+      "job_position": "点検・取付スタッフ",
+      "bounce_type": "permanent",
+      "send_datetime": "2025-06-23 12:39:51",
+      "error_message": "Invalid email format (www prefix)"
+    },
+    {
+      "company_id": 10,
+      "company_name": "株式会社青井黒板製作所",
+      "email_address": "info@www.aoikokuban.co.jp",
+      "job_position": "営業職",
+      "bounce_type": "permanent",
+      "send_datetime": "2025-06-23 12:39:56",
+      "error_message": "Invalid email format (www prefix)"
+    },
+    {
+      "company_id": 11,
+      "company_name": "阪栄株式会社",
+      "email_address": "info@www.hanei-co.jp",
+      "job_position": "事務スタッフ",
+      "bounce_type": "permanent",
+      "send_datetime": "2025-06-23 13:05:14",
+      "error_message": "Invalid email format (www prefix)"
+    },
+    {
+      "company_id": 12,
+      "company_name": "株式会社CROSS CORPORATION",
+      "email_address": "info@www.crosscorporation.co.jp",
+      "job_position": "営業職",
+      "bounce_type": "permanent",
+      "send_datetime": "2025-06-23 13:05:20",
+      "error_message": "Invalid email format (www prefix)"
+    },
+    {
+      "company_id": 13,
+      "company_name": "小西マーク株式会社",
+      "email_address": "info@www.konishi-mark.com",
+      "job_position": "デザインスタッフ",
+      "bounce_type": "permanent",
+      "send_datetime": "2025-06-23 13:05:25",
+      "error_message": "Invalid email format (www prefix)"
+    },
+    {
+      "company_id": 14,
+      "company_name": "ソマックス株式会社",
+      "email_address": "info@www.somax.co.jp",
+      "job_position": "法人営業職",
+      "bounce_type": "permanent",
+      "send_datetime": "2025-06-23 13:05:30",
+      "error_message": "Invalid email format (www prefix)"
+    },
+    {
+      "company_id": 15,
+      "company_name": "日機株式会社",
+      "email_address": "info@www.nikki-tr.co.jp",
+      "job_position": "総合職",
+      "bounce_type": "permanent",
+      "send_datetime": "2025-06-23 13:05:36",
+      "error_message": "Invalid email format (www prefix)"
+    },
+    {
+      "company_id": 17,
+      "company_name": "ローゼン製菓株式会社",
+      "email_address": "info@www.manneken.co.jp",
+      "job_position": "製造・生産管理",
+      "bounce_type": "permanent",
+      "send_datetime": "2025-06-23 13:16:59",
+      "error_message": "Invalid email format (www prefix)"
+    },
+    {
+      "company_id": 20,
+      "company_name": "株式会社シードアシスト",
+      "email_address": "info@www.seedassist.co.jp",
+      "job_position": "ラジオの報道デスク",
+      "bounce_type": "permanent",
+      "send_datetime": "2025-06-23 13:17:15",
+      "error_message": "Invalid email format (www prefix)"
+    },
+    {
+      "company_id": 21,
+      "company_name": "株式会社アドバンス一世",
+      "email_address": "info@www.advance-1st.co.jp",
+      "job_position": "グラフィックデザイナー",
+      "bounce_type": "permanent",
+      "send_datetime": "2025-06-23 13:17:20",
+      "error_message": "Invalid email format (www prefix)"
+    },
+    {
+      "company_id": 22,
+      "company_name": "光徳電興株式会社",
+      "email_address": "info@www.koutokudenkou.co.jp",
+      "job_position": "電気施工管理",
+      "bounce_type": "permanent",
+      "send_datetime": "2025-06-23 13:17:25",
+      "error_message": "Invalid email format (www prefix)"
+    },
+    {
+      "company_id": 23,
+      "company_name": "株式会社テルテルアドバンス",
+      "email_address": "info@www.teruteru.co.jp",
+      "job_position": "自転車店運営スタッフ",
+      "bounce_type": "permanent",
+      "send_datetime": "2025-06-23 13:17:30",
+      "error_message": "Invalid email format (www prefix)"
+    },
+    {
+      "company_id": 25,
+      "company_name": "株式会社月虎金属",
+      "email_address": "info@www.tsukitora.com",
+      "job_position": "営業事務",
+      "bounce_type": "permanent",
+      "send_datetime": "2025-06-23 13:17:40",
+      "error_message": "Invalid email format (www prefix)"
+    },
+    {
+      "company_id": 26,
+      "company_name": "株式会社浪速技建",
+      "email_address": "info@www.naniwakanri.co.jp",
+      "job_position": "設備点検スタッフ",
+      "bounce_type": "permanent",
+      "send_datetime": "2025-06-23 13:19:57",
+      "error_message": "Invalid email format (www prefix)"
+    },
+    {
+      "company_id": 27,
+      "company_name": "林一二株式会社",
+      "email_address": "info@www.hayashikazuji.co.jp",
+      "job_position": "総務経理",
+      "bounce_type": "permanent",
+      "send_datetime": "2025-06-23 13:20:03",
+      "error_message": "Invalid email format (www prefix)"
+    }
+  ],
+  "summary": {
+    "permanent_bounces": 20,
+    "temporary_bounces": 0,
+    "format_errors": 1,
+    "www_prefix_errors": 18
+  },
+  "actions_taken": [
+    "Updated company database with bounce status",
+    "Updated bounce list in sender system",
+    "Processed manual bounce addresses from inbox"
+  ]
+}

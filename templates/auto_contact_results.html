@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}自動問い合わせ結果 - バウンス処理システム{% endblock %}
+
+{% block extra_head %}
+<style>
+    .stats-card {
+        transition: transform 0.2s;
+        border-left: 4px solid #007bff;
+    }
+    .stats-card:hover {
+        transform: translateY(-2px);
+    }
+    .status-badge {
+        font-size: 0.8em;
+    }
+    .success { color: #28a745; }
+    .warning { color: #ffc107; }
+    .danger { color: #dc3545; }
+    .info { color: #17a2b8; }
+    .table-responsive {
+        max-height: 600px;
+        overflow-y: auto;
+    }
+</style>
+{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item active">自動問い合わせ結果</li>
+{% endblock %}
+
+{% block page_title %}自動問い合わせ結果{% endblock %}
+{% block page_description %}バウンス企業への自動問い合わせ処理の結果と統計情報{% endblock %}
+
+{% block content %}
+
+<!-- 統計カード -->
+<div class="row mb-4">
+            <div class="col-md-2">
+                <div class="card stats-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-muted">処理済み企業</h5>
+                        <h2 class="text-primary">{{ stats.total_processed }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card stats-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-muted">問い合わせページ発見</h5>
+                        <h2 class="text-info">{{ stats.contact_page_found }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card stats-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-muted">フォーム検出</h5>
+                        <h2 class="text-warning">{{ stats.form_detected }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card stats-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-muted">フォーム入力</h5>
+                        <h2 class="text-success">{{ stats.form_filled }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card stats-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-muted">フォーム送信</h5>
+                        <h2 class="text-danger">{{ stats.form_submitted }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card stats-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-muted">成功率</h5>
+                        <h2 class="text-success">{{ stats.success_rate }}%</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 処理結果テーブル -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-table me-2"></i>処理結果詳細
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if results %}
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>処理日時</th>
+                                        <th>企業名</th>
+                                        <th>URL</th>
+                                        <th>バウンス理由</th>
+                                        <th>問い合わせページ</th>
+                                        <th>フォーム検出</th>
+                                        <th>フォーム入力</th>
+                                        <th>フォーム送信</th>
+                                        <th>確認メール</th>
+                                        <th>ステータス</th>
+                                        <th>エラー情報</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for result in results %}
+                                    <tr>
+                                        <td>{{ result['処理日時'] }}</td>
+                                        <td>
+                                            <strong>{{ result['企業名'] }}</strong>
+                                            <br><small class="text-muted">ID: {{ result['企業ID'] }}</small>
+                                        </td>
+                                        <td>
+                                            {% if result['URL'] %}
+                                            <a href="{{ result['URL'] }}" target="_blank" class="text-decoration-none">
+                                                <i class="fas fa-external-link-alt"></i>
+                                            </a>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <small class="text-muted">{{ result['バウンス理由'] }}</small>
+                                        </td>
+                                        <td class="text-center">
+                                            {% if result['問い合わせページ検出'] == 'True' %}
+                                            <i class="fas fa-check-circle success"></i>
+                                            {% else %}
+                                            <i class="fas fa-times-circle danger"></i>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            {% if result['フォーム検出'] == 'True' %}
+                                            <i class="fas fa-check-circle success"></i>
+                                            {% else %}
+                                            <i class="fas fa-times-circle danger"></i>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            {% if result['フォーム入力'] == 'True' %}
+                                            <i class="fas fa-check-circle success"></i>
+                                            {% else %}
+                                            <i class="fas fa-times-circle danger"></i>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            {% if result['フォーム送信'] == 'True' %}
+                                            <i class="fas fa-check-circle success"></i>
+                                            {% else %}
+                                            <i class="fas fa-times-circle danger"></i>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            {% if result['確認メール受信'] == 'True' %}
+                                            <i class="fas fa-check-circle success" title="{{ result['確認メール件名'] }}"></i>
+                                            {% else %}
+                                            <i class="fas fa-times-circle danger"></i>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if result['処理ステータス'] == 'completed' %}
+                                            <span class="badge bg-success status-badge">完了</span>
+                                            {% elif result['処理ステータス'] == 'error' %}
+                                            <span class="badge bg-danger status-badge">エラー</span>
+                                            {% elif result['処理ステータス'] == 'no_url' %}
+                                            <span class="badge bg-warning status-badge">URL無し</span>
+                                            {% elif result['処理ステータス'] == 'no_contact_page' %}
+                                            <span class="badge bg-info status-badge">問い合わせページ無し</span>
+                                            {% elif result['処理ステータス'] == 'no_form' %}
+                                            <span class="badge bg-secondary status-badge">フォーム無し</span>
+                                            {% else %}
+                                            <span class="badge bg-light text-dark status-badge">{{ result['処理ステータス'] }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if result['エラー情報'] %}
+                                            <small class="text-danger">{{ result['エラー情報'][:50] }}{% if result['エラー情報']|length > 50 %}...{% endif %}</small>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">処理結果がありません</h5>
+                            <p class="text-muted">自動問い合わせシステムを実行すると、ここに結果が表示されます。</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+        // ツールチップを有効化
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+        
+    // 5分ごとに自動更新
+    setTimeout(function() {
+        location.reload();
+    }, 300000);
+</script>
+{% endblock %}

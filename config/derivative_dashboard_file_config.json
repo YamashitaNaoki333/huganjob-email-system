@@ -1,0 +1,13 @@
+{
+  "last_updated": "2025-06-18T10:51:57.987232",
+  "primary_files": {
+    "email_extraction": "data/derivative_consolidated/new_email_extraction_results_consolidated.csv",
+    "prioritized_extraction": "data/derivative_consolidated/new_email_extraction_results_consolidated.csv",
+    "website_analysis": "data/derivative_consolidated/new_website_analysis_results_consolidated.csv",
+    "email_sending": "data/derivative_consolidated/new_sent_emails_record_consolidated.csv"
+  },
+  "file_locations": {
+    "consolidated_dir": "data/derivative_consolidated",
+    "archive_dir": "new_archives"
+  }
+}
